@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CPG & Retail Intelligent Platform</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy:   #1A2E4A;
+    --teal:   #009B8E;
+    --amber:  #F5A623;
+    --slate:  #2D4A6B;
+    --light:  #F4F7FA;
+    --border: #DDE3EC;
+    --text:   #1A2E4A;
+    --muted:  #6B7E99;
+    --green:  #12B76A;
+    --red:    #F04438;
+    --white:  #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--light); color: var(--text); }
+
+  /* ── Header ── */
+  .header { background: var(--navy); color: white; padding: 28px 48px 0; display: flex; flex-direction: column; }
+  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .header-meta { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; opacity: .6; }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+  .header-sub { font-size: 13px; opacity: .65; margin-bottom: 24px; }
+  .author { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-radius: 40px; padding: 8px 18px 8px 8px; }
+  .author img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--teal); }
+  .author-text { display: flex; flex-direction: column; }
+  .author-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--teal); }
+  .author-name { font-size: 14px; font-weight: 700; color: white; }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,.12); }
+  .tab { padding: 14px 20px; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.55); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .tab:hover { color: rgba(255,255,255,.85); }
+  .tab.active { color: white; border-bottom-color: var(--teal); }
+  .tab-icon { font-size: 15px; }
+
+  /* ── Content ── */
+  .content { max-width: 1100px; margin: 36px auto; padding: 0 24px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── TL;DR box ── */
+  .tldr { background: var(--navy); color: white; border-radius: 10px; padding: 24px 28px; margin-bottom: 28px; line-height: 1.6; }
+  .tldr-label { font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; opacity: .5; margin-bottom: 8px; }
+  .tldr p { font-size: 15px; }
+  .tldr strong { color: var(--teal); }
+
+  /* ── KPI row ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .kpi-card { background: white; border-radius: 10px; padding: 20px 22px; border: 1px solid var(--border); }
+  .kpi-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+  .kpi-value { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kpi-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 6px; }
+  .badge-green { background: #D1FAE5; color: #065F46; }
+  .badge-amber { background: #FEF3C7; color: #92400E; }
+  .badge-red   { background: #FEE2E2; color: #991B1B; }
+  .badge-blue  { background: #DBEAFE; color: #1E40AF; }
+
+  /* ── Two-col ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+
+  /* ── Section card ── */
+  .card { background: white; border-radius: 10px; padding: 24px; border: 1px solid var(--border); }
+  .card h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 16px; }
+  .card h2 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+
+  /* ── Row items ── */
+  .row-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .row-item:last-child { border-bottom: none; }
+  .row-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+  .icon-green { background: #D1FAE5; }
+  .icon-red   { background: #FEE2E2; }
+  .icon-amber { background: #FEF3C7; }
+  .icon-blue  { background: #DBEAFE; }
+  .icon-teal  { background: #CCFBF1; }
+  .row-body strong { display: block; font-size: 14px; font-weight: 600; color: var(--navy); }
+  .row-body span   { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ── Charts ── */
+  .chart-wrap { position: relative; height: 220px; }
+
+  /* ── Architecture ── */
+  .arch-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-bottom: 28px; align-items: stretch; }
+  .arch-step { background: white; border: 1px solid var(--border); padding: 18px 14px; text-align: center; position: relative; }
+  .arch-step:not(:last-child)::after { content: '→'; position: absolute; right: -12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--teal); z-index: 1; background: white; padding: 2px; }
+  .arch-step .step-icon { font-size: 26px; margin-bottom: 8px; }
+  .arch-step .step-title { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .arch-step .step-detail { font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .arch-step.highlight { background: var(--navy); border-color: var(--navy); }
+  .arch-step.highlight .step-title { color: white; }
+  .arch-step.highlight .step-detail { color: rgba(255,255,255,.6); }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--muted); padding: 8px 12px; border-bottom: 2px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+
+  /* ── Alert cards (monitoring) ── */
+  .alert-card { border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; border-left: 4px solid; }
+  .alert-card.critical { background: #FFF1F0; border-color: var(--red); }
+  .alert-card.warning  { background: #FFFBEB; border-color: var(--amber); }
+  .alert-card.info     { background: #F0FDFA; border-color: var(--teal); }
+  .alert-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .alert-card p  { font-size: 13px; color: var(--muted); }
+  .severity { font-size: 11px; font-weight: 700; letter-spacing: .8px; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .sev-critical { background: var(--red);   color: white; }
+  .sev-warning  { background: var(--amber); color: white; }
+  .sev-info     { background: var(--teal);  color: white; }
+
+  /* ── Needs section ── */
+  .needs-list { list-style: none; }
+  .needs-list li { padding: 14px 0; border-bottom: 1px solid var(--border); padding-left: 14px; border-left: 3px solid var(--teal); margin-bottom: 12px; border-radius: 0 4px 4px 0; }
+  .needs-list li strong { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .needs-list li span { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ── Section heading ── */
+  .section-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .section-sub   { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .kpi-row { grid-template-columns: repeat(2,1fr); }
+    .two-col, .three-col, .arch-grid { grid-template-columns: 1fr; }
+    .arch-step::after { display: none; }
+    .header { padding: 20px 20px 0; }
+    .content { padding: 0 16px; }
+    .tabs { overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-meta">CPG & Retail Intelligent Platform · 2024–2026</div>
+    <div class="author">
+      <img src="headshot.png" alt="Jess L." />
+      <div class="author-text">
+        <span class="author-label">Built by</span>
+        <span class="author-name">Jess L.</span>
+        <a href="https://github.com/jessleung131-prog/CPG-and-Retail-Intelligent-Platform" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:5px;color:rgba(255,255,255,.5);text-decoration:none;font-size:11px;font-weight:500;">
+          <svg height="12" width="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+  <h1>From Raw Data to Boardroom in Minutes</h1>
+  <p class="header-sub">Sales forecasting · Media Mix Modelling · AI-powered insights · Executive deck generation</p>
+  <nav class="tabs">
+    <div class="tab active" onclick="switchTab('overview')"><span class="tab-icon">📋</span> Executive Overview</div>
+    <div class="tab" onclick="switchTab('data')"><span class="tab-icon">🗄️</span> Data Foundation</div>
+    <div class="tab" onclick="switchTab('models')"><span class="tab-icon">📈</span> Forecasting & MMM</div>
+    <div class="tab" onclick="switchTab('api')"><span class="tab-icon">⚡</span> Dashboard API</div>
+    <div class="tab" onclick="switchTab('insights')"><span class="tab-icon">🤖</span> AI Insights</div>
+    <div class="tab" onclick="switchTab('monitoring')"><span class="tab-icon">🔔</span> Monitoring</div>
+  </nav>
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="content">
+
+  <!-- ── OVERVIEW ── -->
+  <div id="panel-overview" class="panel active">
+    <div class="tldr">
+      <div class="tldr-label">TL;DR</div>
+      <p>A fully automated end-to-end analytics platform for CPG & Retail. <strong>2 years of synthetic data generated</strong>, a <strong>FastAPI dashboard</strong> serving 8 live endpoints, <strong>Prophet + XGBoost forecasting</strong> with confidence intervals, <strong>Ridge regression MMM</strong> attributing spend across 6 channels, and <strong>Claude AI</strong> writing the executive narrative — all in one repo.</p>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Revenue Modelled</div>
+        <div class="kpi-value">$73.3M</div>
+        <div class="kpi-sub">2-year synthetic dataset</div>
+        <span class="kpi-badge badge-green">↑ Blended 2.32x ROAS</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">CRM Contacts</div>
+        <div class="kpi-value">25,019</div>
+        <div class="kpi-sub">Full lead-to-close funnel</div>
+        <span class="kpi-badge badge-blue">5 pipeline stages</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Top Channel ROAS</div>
+        <div class="kpi-value">6.79x</div>
+        <div class="kpi-sub">Email outperforms all channels</div>
+        <span class="kpi-badge badge-amber">4.5× vs TV/CTV</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Test Coverage</div>
+        <div class="kpi-value">24</div>
+        <div class="kpi-sub">Passing tests across all modules</div>
+        <span class="kpi-badge badge-green">All passing ✓</span>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>What This Platform Replaces</h3>
+        <div class="row-item">
+          <div class="row-icon icon-green">✓</div>
+          <div class="row-body"><strong>Manual Excel reporting</strong><span>Automated KPI pipeline with anomaly detection replaces weekly analyst builds</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-green">✓</div>
+          <div class="row-body"><strong>Siloed attribution tools</strong><span>Single MMM model attributes revenue across all 6 media channels simultaneously</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-green">✓</div>
+          <div class="row-body"><strong>Reactive forecasting</strong><span>30–90 day rolling forecast with confidence intervals catches revenue problems early</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-green">✓</div>
+          <div class="row-body"><strong>Days-long deck prep</strong><span>Claude generates the narrative and python-pptx builds the boardroom deck — in seconds</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Platform Architecture</h3>
+        <div class="row-item">
+          <div class="row-icon icon-teal">🗄️</div>
+          <div class="row-body"><strong>BigQuery Data Warehouse</strong><span>raw → staging → mart → ML → monitoring layers with schema validation</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-teal">📈</div>
+          <div class="row-body"><strong>Forecasting Models</strong><span>Prophet (seasonality) + XGBoost (feature-rich) with chronological train/val/test splits</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-teal">📡</div>
+          <div class="row-body"><strong>FastAPI Dashboard</strong><span>8 REST endpoints with dynamic filtering, caching, and reliability warnings</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-teal">🤖</div>
+          <div class="row-body"><strong>Claude AI Layer</strong><span>claude-opus-4-6 reads all KPIs and writes structured JSON insights automatically</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>What Leadership Gets From This</h3>
+      <div class="three-col" style="margin-bottom:0; margin-top: 8px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">See It 30 Days Earlier</div>
+          <p style="font-size:13px;color:var(--muted);line-height:1.6;">Rolling forecasts with 90% confidence intervals surface revenue risk weeks before it shows in actuals. No more end-of-quarter surprises.</p>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Spend Smarter</div>
+          <p style="font-size:13px;color:var(--muted);line-height:1.6;">MMM reveals Email delivers 4.5× better ROAS than TV/CTV — yet receives 13× less budget. The model makes budget reallocation defensible.</p>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Zero Reporting Hours</div>
+          <p style="font-size:13px;color:var(--muted);line-height:1.6;">From raw data refresh to a boardroom-ready PowerPoint: one command. The entire reporting cycle is eliminated for analysts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DATA ── -->
+  <div id="panel-data" class="panel">
+    <p class="section-title">Data Foundation</p>
+    <p class="section-sub">2 years of synthetic CPG & Retail data generated with realistic seasonality, promotions, adstock, and CRM conversion logic.</p>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Online Sales Rows</div>
+        <div class="kpi-value">8,772</div>
+        <div class="kpi-sub">Daily · DTC / Amazon / Walmart.com</div>
+        <span class="kpi-badge badge-blue">4 categories</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Offline POS Rows</div>
+        <div class="kpi-value">8,400</div>
+        <div class="kpi-sub">Weekly store-level POS data</div>
+        <span class="kpi-badge badge-blue">5 regions · 4 formats</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">CRM Contacts</div>
+        <div class="kpi-value">25,019</div>
+        <div class="kpi-sub">Lead → MQL → SQL → Opp → Won</div>
+        <span class="kpi-badge badge-blue">5 pipeline stages</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Media Spend Rows</div>
+        <div class="kpi-value">630</div>
+        <div class="kpi-sub">Weekly · 6 channels · with adstock</div>
+        <span class="kpi-badge badge-blue">ROAS + CTR + CVR + CPA</span>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Online Revenue by Channel (2-Year)</h3>
+        <div class="chart-wrap">
+          <canvas id="chart-online"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3>CRM Funnel Conversion</h3>
+        <div class="chart-wrap">
+          <canvas id="chart-crm"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Data Realism Features</h3>
+      <table>
+        <tr><th>Dataset</th><th>Seasonality</th><th>Special Effects</th><th>Noise Model</th></tr>
+        <tr>
+          <td><strong>Online Sales</strong></td>
+          <td>Holiday peaks, Q4 surge</td>
+          <td>Promo lift windows, YoY growth trend</td>
+          <td>Log-normal multiplicative</td>
+        </tr>
+        <tr>
+          <td><strong>Offline POS</strong></td>
+          <td>Weekly store cycles, summer dip</td>
+          <td>Regional pricing, format-level promo</td>
+          <td>Normal with floor clipping</td>
+        </tr>
+        <tr>
+          <td><strong>CRM Funnel</strong></td>
+          <td>B2B slow periods (Aug, Dec)</td>
+          <td>Stage lags (3–30 days), realistic drop-off</td>
+          <td>Binomial conversion draws</td>
+        </tr>
+        <tr>
+          <td><strong>Media Spend</strong></td>
+          <td>Flighting patterns by channel</td>
+          <td>Geometric adstock, Hill saturation</td>
+          <td>Log-normal spend variance</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── MODELS ── -->
+  <div id="panel-models" class="panel">
+    <p class="section-title">Forecasting & Media Mix Modelling</p>
+    <p class="section-sub">Chronological train / val / test splits (70 / 15 / 15) — no data leakage. Two forecast backends + Ridge regression MMM.</p>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Forecasting Models</h3>
+        <div class="row-item">
+          <div class="row-icon icon-teal">📅</div>
+          <div class="row-body"><strong>Prophet</strong><span>Yearly + weekly seasonality components, 90% confidence intervals, handles holidays and trend changepoints</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-teal">🌲</div>
+          <div class="row-body"><strong>XGBoost</strong><span>Day-of-week, day-of-year, sin/cos cyclical features. Residual-based confidence intervals</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-amber">⚠️</div>
+          <div class="row-body"><strong>Reliability Warnings</strong><span>Automatically flagged when MAPE &gt; 20% or R² &lt; 0.50 — prevents over-reliance on weak forecasts</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-blue">✂️</div>
+          <div class="row-body"><strong>Chronological Split</strong><span>Split by date fraction, not row count. Train ends before val starts — zero leakage by construction</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Sales Forecast — 90-Day Horizon</h3>
+        <div class="chart-wrap">
+          <canvas id="chart-forecast"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>MMM — Channel ROAS</h3>
+        <div class="chart-wrap">
+          <canvas id="chart-roas"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Media Mix Model Design</h3>
+        <div class="row-item">
+          <div class="row-icon icon-teal">📡</div>
+          <div class="row-body"><strong>Ridge Regression (positive=True)</strong><span>Enforces non-negative channel contributions. StandardScaler normalises spend magnitudes across channels</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-teal">⏳</div>
+          <div class="row-body"><strong>Geometric Adstock</strong><span>Models carryover effect of media spend — TV impact decays over 4+ weeks; Email over 1–2 weeks</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-teal">📉</div>
+          <div class="row-body"><strong>Hill Saturation</strong><span>Diminishing returns curve — doubling spend does not double revenue. Makes budget recommendations defensible</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-green">💡</div>
+          <div class="row-body"><strong>Key Finding</strong><span>Email delivers 6.79× ROAS — 4.5× better than TV/CTV at 1.51× — yet receives a fraction of the budget</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── API ── -->
+  <div id="panel-api" class="panel">
+    <p class="section-title">Dashboard API</p>
+    <p class="section-sub">FastAPI with 8 live endpoints, dynamic filtering, lru_cache data loading, and automatic reliability warnings when data is sparse.</p>
+
+    <div class="card" style="margin-bottom:20px;">
+      <h3>Live Endpoints</h3>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Filters</th></tr>
+        <tr>
+          <td><span class="pill" style="background:#D1FAE5;color:#065F46;">GET</span></td>
+          <td><code>/kpis/summary</code></td>
+          <td>Revenue, orders, AOV, conversion rate</td>
+          <td>channel, category, date range</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#D1FAE5;color:#065F46;">GET</span></td>
+          <td><code>/kpis/trend</code></td>
+          <td>Daily/weekly KPI time series</td>
+          <td>channel, category, date range</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#D1FAE5;color:#065F46;">GET</span></td>
+          <td><code>/forecast/sales</code></td>
+          <td>Prophet or XGBoost 90-day forecast</td>
+          <td>model, channel, min 60 rows</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#D1FAE5;color:#065F46;">GET</span></td>
+          <td><code>/attribution/channel-contribution</code></td>
+          <td>MMM revenue % by channel</td>
+          <td>date range</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#D1FAE5;color:#065F46;">GET</span></td>
+          <td><code>/attribution/spend-efficiency</code></td>
+          <td>ROAS, CPA, ROI per channel</td>
+          <td>date range</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#D1FAE5;color:#065F46;">GET</span></td>
+          <td><code>/crm/funnel</code></td>
+          <td>Stage counts, conversion rates, avg lag</td>
+          <td>date range</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#D1FAE5;color:#065F46;">GET</span></td>
+          <td><code>/crm/by-source</code></td>
+          <td>Pipeline breakdown by lead source</td>
+          <td>date range</td>
+        </tr>
+        <tr>
+          <td><span class="pill" style="background:#DBEAFE;color:#1E40AF;">POST</span></td>
+          <td><code>/cache/clear</code></td>
+          <td>Invalidate lru_cache after data refresh</td>
+          <td>—</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="three-col">
+      <div class="card">
+        <h3>Dynamic Filtering</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Every endpoint accepts <code>channel</code>, <code>category</code>, <code>start_date</code>, and <code>end_date</code> query params. The <code>apply_filters()</code> helper validates and slices consistently across all routes.</p>
+      </div>
+      <div class="card">
+        <h3>Reliability Warnings</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">When a filtered slice returns fewer than 30 rows, the API automatically attaches a <code>reliability_warning</code> field to the response — surfacing data sparsity to the consumer.</p>
+      </div>
+      <div class="card">
+        <h3>Performance</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Parquet files are loaded once via <code>@lru_cache</code> on startup. Subsequent requests hit the in-memory cache. The <code>/cache/clear</code> endpoint invalidates after any data refresh.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INSIGHTS ── -->
+  <div id="panel-insights" class="panel">
+    <p class="section-title">AI Insights & Executive Deck</p>
+    <p class="section-sub">Claude reads every KPI, writes structured insights as JSON, then python-pptx builds a boardroom-ready PowerPoint — zero human editing required.</p>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>How It Works</h3>
+        <div class="row-item">
+          <div class="row-icon icon-blue" style="font-size:16px;font-weight:700;color:var(--navy);">1</div>
+          <div class="row-body"><strong>Context Builder</strong><span>Aggregates all KPIs — revenue, ROAS by channel, funnel conversion, forecast accuracy — into a single structured dict</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-blue" style="font-size:16px;font-weight:700;color:var(--navy);">2</div>
+          <div class="row-body"><strong>Claude API Call</strong><span><code>claude-opus-4-6</code> receives the context and returns structured JSON: executive summary, channel highlights, risks, opportunities, and priority actions</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-blue" style="font-size:16px;font-weight:700;color:var(--navy);">3</div>
+          <div class="row-body"><strong>JSON Insights Report</strong><span>Saved to <code>outputs/insights_report.json</code> — machine-readable, auditable, and re-usable by downstream tools</span></div>
+        </div>
+        <div class="row-item">
+          <div class="row-icon icon-blue" style="font-size:16px;font-weight:700;color:var(--navy);">4</div>
+          <div class="row-body"><strong>Executive PPTX</strong><span>6-slide branded deck auto-built from the insights JSON. Run <code>--upload</code> to push directly to Google Slides</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Sample Insight Categories</h3>
+        <div style="background:#F0FDFA;border-left:4px solid var(--teal);padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+          <strong style="font-size:13px;color:var(--navy);">Executive Summary</strong>
+          <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;">Revenue up 18% YoY driven by DTC channel growth and Email re-engagement campaigns. Q4 seasonality tracking above forecast.</p>
+        </div>
+        <div style="background:#FFFBEB;border-left:4px solid var(--amber);padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+          <strong style="font-size:13px;color:var(--navy);">Risk: Budget Misallocation</strong>
+          <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;">TV/CTV receives 38% of spend but delivers only 1.51× ROAS. Shifting 15% to Email could yield $2.1M incremental revenue.</p>
+        </div>
+        <div style="background:#EFF6FF;border-left:4px solid #3B82F6;padding:14px 16px;border-radius:0 8px 8px 0;">
+          <strong style="font-size:13px;color:var(--navy);">Opportunity: CRM Acceleration</strong>
+          <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;">SQL→Opportunity conversion at 61% — top quartile. Closing lag of 14 days is the primary lever to improve quarterly revenue recognition.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Executive Deck — 6 Slides Auto-Generated</h3>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:8px;">
+        <div style="background:var(--navy);border-radius:8px;padding:16px 12px;text-align:center;color:white;">
+          <div style="font-size:20px;font-weight:700;color:var(--teal);">01</div>
+          <div style="font-size:12px;font-weight:600;margin-top:8px;">Title</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:16px 12px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:var(--navy);">02</div>
+          <div style="font-size:12px;font-weight:600;margin-top:8px;color:var(--muted);">Executive Summary</div>
+        </div>
+        <div style="background:var(--teal);border-radius:8px;padding:16px 12px;text-align:center;color:white;">
+          <div style="font-size:20px;font-weight:700;">03</div>
+          <div style="font-size:12px;font-weight:600;margin-top:8px;">Channel Highlights</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:16px 12px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:var(--navy);">04</div>
+          <div style="font-size:12px;font-weight:600;margin-top:8px;color:var(--muted);">Sales & Funnel</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:16px 12px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:var(--navy);">05</div>
+          <div style="font-size:12px;font-weight:600;margin-top:8px;color:var(--muted);">Risks & Opps</div>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:16px 12px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:var(--navy);">06</div>
+          <div style="font-size:12px;font-weight:600;margin-top:8px;color:var(--muted);">Actions</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:14px;">Run: <code>python3 deck_generation/generate_deck.py</code> &nbsp;·&nbsp; Add <code>--upload</code> to push directly to Google Slides</p>
+    </div>
+  </div>
+
+  <!-- ── MONITORING ── -->
+  <div id="panel-monitoring" class="panel">
+    <p class="section-title">Monitoring & Alerting</p>
+    <p class="section-sub">The platform watches itself. Every pipeline run, data load, and model output is tracked — alerts fire the moment something goes wrong.</p>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Freshness Check</div>
+        <div class="kpi-value" style="font-size:22px;">3 / 7 days</div>
+        <div class="kpi-sub">Warning / Critical thresholds</div>
+        <span class="kpi-badge badge-red">CRITICAL if stale</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Row Count Drop</div>
+        <div class="kpi-value" style="font-size:22px;">40 / 60%</div>
+        <div class="kpi-sub">vs rolling historical average</div>
+        <span class="kpi-badge badge-amber">WARNING at 40%+</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Anomaly Methods</div>
+        <div class="kpi-value" style="font-size:22px;">3</div>
+        <div class="kpi-sub">Z-score · IQR · Level-shift</div>
+        <span class="kpi-badge badge-blue">+ Null spike check</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Model Degradation</div>
+        <div class="kpi-value" style="font-size:22px;">MAPE</div>
+        <div class="kpi-sub">Logged every run · flags retraining</div>
+        <span class="kpi-badge badge-green">R² tracked too</span>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="alert-card critical">
+          <div>
+            <h4>Data Freshness — online_sales</h4>
+            <p>Latest record is 8 days old. Threshold: 7 days critical. Possible ingestion failure.</p>
+          </div>
+          <span class="severity sev-critical">CRITICAL</span>
+        </div>
+        <div class="alert-card warning">
+          <div>
+            <h4>Row Count Drop — media_spend</h4>
+            <p>Weekly ingestion volume down 43% vs 4-week rolling average. Investigate upstream feed.</p>
+          </div>
+          <span class="severity sev-warning">WARNING</span>
+        </div>
+        <div class="alert-card warning">
+          <div>
+            <h4>Statistical Anomaly — revenue</h4>
+            <p>Z-score of 3.4 detected on 2024-11-29. Possible promo spike or data error. Review required.</p>
+          </div>
+          <span class="severity sev-warning">WARNING</span>
+        </div>
+        <div class="alert-card info">
+          <div>
+            <h4>Model Degradation — XGBoost forecast</h4>
+            <p>MAPE increased from 11.2% to 18.7% over last 3 runs. Consider retraining on recent data.</p>
+          </div>
+          <span class="severity sev-info">INFO</span>
+        </div>
+        <div class="alert-card info">
+          <div>
+            <h4>Schema Drift — crm_funnel</h4>
+            <p>All expected columns present. No drift detected. Last checked: pipeline run #47.</p>
+          </div>
+          <span class="severity sev-info">INFO</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>What Monitoring Covers</h3>
+        <ul class="needs-list">
+          <li>
+            <strong>Data Freshness</strong>
+            <span>Flags when the latest record in any table exceeds the warning (3d) or critical (7d) threshold. First defence against silent ingestion failures.</span>
+          </li>
+          <li>
+            <strong>Row Count Health</strong>
+            <span>Compares each new load to a rolling historical average. A 40%+ drop is a warning; 60%+ is critical. Catches partial loads and API quota issues.</span>
+          </li>
+          <li>
+            <strong>Statistical Anomaly Detection</strong>
+            <span>Z-score outliers (|z| &gt; 3), IQR outliers (1.5× fence), level-shift detection via rolling mean deviation, and null spike checks on every numeric column.</span>
+          </li>
+          <li>
+            <strong>Slack Alerts</strong>
+            <span>All critical and warning alerts are dispatched to a configured Slack webhook with severity label, table name, and root-cause hint — no dashboard required.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+// ── Tab switching ──
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+  // lazy-init charts
+  if (name === 'data')    { initDataCharts(); }
+  if (name === 'models')  { initModelCharts(); }
+}
+
+const TEAL  = '#009B8E';
+const NAVY  = '#1A2E4A';
+const AMBER = '#F5A623';
+const SLATE = '#2D4A6B';
+const MUTED = '#6B7E99';
+
+let chartsInit = {};
+
+// ── Data charts ──
+function initDataCharts() {
+  if (chartsInit.data) return; chartsInit.data = true;
+
+  // Online revenue by channel
+  new Chart(document.getElementById('chart-online'), {
+    type: 'bar',
+    data: {
+      labels: ['DTC', 'Amazon', 'Walmart.com'],
+      datasets: [
+        { label: 'Beverages', data: [12.4, 8.1, 5.2], backgroundColor: TEAL },
+        { label: 'Snacks',    data: [9.8,  6.7, 4.1], backgroundColor: NAVY },
+        { label: 'Personal',  data: [7.2,  5.3, 3.8], backgroundColor: AMBER },
+        { label: 'Household', data: [5.1,  4.2, 1.4], backgroundColor: MUTED },
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, ticks: { callback: v => '$' + v + 'M' } }
+      }
+    }
+  });
+
+  // CRM funnel
+  new Chart(document.getElementById('chart-crm'), {
+    type: 'bar',
+    data: {
+      labels: ['Lead', 'MQL', 'SQL', 'Opportunity', 'Closed Won'],
+      datasets: [{ label: 'Contacts', data: [25019, 9508, 5754, 3510, 1580],
+        backgroundColor: [TEAL, NAVY, SLATE, AMBER, '#12B76A'], borderRadius: 4 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: { x: { grid: { display: false } }, y: { grid: { display: false } } }
+    }
+  });
+}
+
+// ── Model charts ──
+function initModelCharts() {
+  if (chartsInit.models) return; chartsInit.models = true;
+
+  // Forecast line
+  const labels = [];
+  const actual = [], forecast = [], upper = [], lower = [];
+  for (let i = 0; i < 120; i++) {
+    const d = new Date(2024, 8, 1); d.setDate(d.getDate() + i);
+    labels.push(d.toISOString().slice(5, 10));
+    const base = 180 + Math.sin(i * 0.15) * 30 + i * 0.4;
+    const noise = (Math.random() - 0.5) * 20;
+    if (i < 90) { actual.push(+(base + noise).toFixed(1)); forecast.push(null); upper.push(null); lower.push(null); }
+    else        { actual.push(null); forecast.push(+(base).toFixed(1)); upper.push(+(base + 22).toFixed(1)); lower.push(+(base - 22).toFixed(1)); }
+  }
+
+  new Chart(document.getElementById('chart-forecast'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Actual',   data: actual,   borderColor: NAVY,  borderWidth: 2, pointRadius: 0, fill: false },
+        { label: 'Forecast', data: forecast, borderColor: TEAL,  borderWidth: 2, pointRadius: 0, borderDash: [5,3], fill: false },
+        { label: 'Upper CI', data: upper,    borderColor: 'transparent', backgroundColor: 'rgba(0,155,142,.15)', fill: '+1', pointRadius: 0 },
+        { label: 'Lower CI', data: lower,    borderColor: 'transparent', backgroundColor: 'rgba(0,155,142,.15)', fill: false, pointRadius: 0 },
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: { x: { ticks: { maxTicksLimit: 8 }, grid: { display: false } }, y: { ticks: { callback: v => '$' + v + 'K' } } }
+    }
+  });
+
+  // ROAS bar
+  new Chart(document.getElementById('chart-roas'), {
+    type: 'bar',
+    data: {
+      labels: ['Email', 'Paid Search', 'Paid Social', 'Display', 'Influencer', 'TV/CTV'],
+      datasets: [{ label: 'ROAS',
+        data: [6.79, 4.12, 3.47, 2.81, 2.34, 1.51],
+        backgroundColor: [TEAL, NAVY, SLATE, AMBER, MUTED, '#F04438'],
+        borderRadius: 4
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { ticks: { callback: v => v + 'x' }, grid: { color: '#EEF2F7' } }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>
