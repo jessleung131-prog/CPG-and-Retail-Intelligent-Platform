@@ -2,6 +2,10 @@
 
 A production-oriented analytics platform for CPG and retail clients operating across eCommerce and brick-and-mortar channels. Built on GCP with Python and FastAPI.
 
+🔴 **[Live Demo →](https://jessleung131-prog.github.io/CPG-and-Retail-Intelligent-Platform/)**
+
+---
+
 ## What It Does
 
 | Layer | Capability |
