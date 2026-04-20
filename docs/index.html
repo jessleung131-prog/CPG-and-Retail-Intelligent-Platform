@@ -166,6 +166,7 @@
     <div class="tab" onclick="switchTab('api')"><span class="tab-icon">⚡</span> Dashboard API</div>
     <div class="tab" onclick="switchTab('insights')"><span class="tab-icon">🤖</span> AI Insights</div>
     <div class="tab" onclick="switchTab('monitoring')"><span class="tab-icon">🔔</span> Monitoring</div>
+    <div class="tab" onclick="switchTab('deck')"><span class="tab-icon">📊</span> Business Deck</div>
   </nav>
 </div>
 
@@ -652,6 +653,92 @@
             <span>All critical and warning alerts are dispatched to a configured Slack webhook with severity label, table name, and root-cause hint — no dashboard required.</span>
           </li>
         </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DECK ── -->
+  <div id="panel-deck" class="panel">
+    <p class="section-title">Business Deck</p>
+    <p class="section-sub">A 12-slide showcase deck covering the business problem, methodology, platform architecture, and measurable impact — ready to present.</p>
+
+    <div class="two-col" style="margin-bottom:28px;">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <h3>Showcase Deck — 12 Slides</h3>
+          <div class="row-item">
+            <div class="row-icon icon-teal">1</div>
+            <div class="row-body"><strong>Title & Overview</strong><span>Platform introduction and business context</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">2</div>
+            <div class="row-body"><strong>Business Problem</strong><span>Why CPG & Retail analytics is broken today</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">3</div>
+            <div class="row-body"><strong>Architecture</strong><span>End-to-end platform design across 6 layers</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">4</div>
+            <div class="row-body"><strong>Data Foundation</strong><span>Synthetic data generation methodology</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">5</div>
+            <div class="row-body"><strong>Forecasting Models</strong><span>Prophet + XGBoost with confidence intervals</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">6</div>
+            <div class="row-body"><strong>Media Mix Modelling</strong><span>ROAS attribution across 6 channels</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">7</div>
+            <div class="row-body"><strong>Dashboard API</strong><span>8 live FastAPI endpoints</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">8</div>
+            <div class="row-body"><strong>AI Insights</strong><span>Claude-powered executive narrative generation</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">9</div>
+            <div class="row-body"><strong>Executive Deck Generation</strong><span>From data to PPTX in one command</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">10</div>
+            <div class="row-body"><strong>Monitoring & Alerting</strong><span>Self-healing pipeline with Slack alerts</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-teal">11</div>
+            <div class="row-body"><strong>Business Impact</strong><span>$73.3M modelled · 6.79× ROAS · 24 tests</span></div>
+          </div>
+          <div class="row-item">
+            <div class="row-icon icon-amber">12</div>
+            <div class="row-body"><strong>Run It Yourself</strong><span>Three commands. Full platform. No cloud needed.</span></div>
+          </div>
+        </div>
+        <div style="margin-top:24px;">
+          <a href="CPG_Retail_Platform_Showcase.pptx" download style="display:inline-flex;align-items:center;gap:10px;background:#009B8E;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Deck (PPTX)
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>What the Deck Covers</h3>
+        <div style="margin-top:8px;">
+          <div style="background:#F0FDFA;border-left:4px solid var(--teal);padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+            <strong style="font-size:13px;color:var(--navy);">For Business Stakeholders</strong>
+            <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">Frames the problem in revenue terms — how much budget misallocation costs, why reactive forecasting is a liability, and what automated reporting is worth in analyst hours.</p>
+          </div>
+          <div style="background:#F0FDFA;border-left:4px solid var(--teal);padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:12px;">
+            <strong style="font-size:13px;color:var(--navy);">For Technical Reviewers</strong>
+            <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">Walks through the architecture, model choices, split methodology, and API design — enough depth to evaluate the engineering without drowning in code.</p>
+          </div>
+          <div style="background:#FFFBEB;border-left:4px solid var(--amber);padding:14px 16px;border-radius:0 8px 8px 0;">
+            <strong style="font-size:13px;color:var(--navy);">Key Takeaway</strong>
+            <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">Email delivers 4.5× better ROAS than TV/CTV — yet receives 13× less budget. The platform makes this visible, quantifiable, and actionable in minutes.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
