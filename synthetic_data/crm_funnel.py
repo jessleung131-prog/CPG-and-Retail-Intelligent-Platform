@@ -31,12 +31,13 @@ STAGE_LAG_DAYS = {
 
 # Lead sources
 LEAD_SOURCES = {
-    "Paid Search":    0.28,
-    "Paid Social":    0.22,
+    "Paid Search":    0.24,
+    "Facebook / Instagram": 0.14,
+    "TikTok":         0.06,
     "Organic Search": 0.18,
     "Email":          0.12,
-    "Events":         0.10,
-    "Referral":       0.10,
+    "Events":         0.14,
+    "Referral":       0.12,
 }
 
 # Industry verticals
