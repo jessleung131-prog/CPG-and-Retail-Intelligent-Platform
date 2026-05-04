@@ -12,7 +12,13 @@ import numpy as np
 import pandas as pd
 
 
-# Channel definitions: base weekly spend, efficiency params
+# Channel definitions: base weekly spend, efficiency params.
+#
+# seasonal_phase: day-of-year at which spend peaks — kept distinct per
+#   channel so each has a unique flight pattern (reducing collinearity).
+# campaign_weeks: ISO week numbers where a 2× budget surge fires.
+#   These "natural experiments" give the Ridge clear variation to attribute
+#   per-channel effects from (rather than relying on correlated seasonality).
 CHANNELS = {
     "Paid Search": {
         "base_spend":    18_000,
@@ -20,17 +26,47 @@ CHANNELS = {
         "ctr":           0.045,
         "cvr":           0.035,
         "roas_base":     4.2,
-        "adstock_decay": 0.30,  # 30% carryover to next week
+        "adstock_decay": 0.30,   # 30% carryover to next week
         "saturation_k":  0.00005,
+        "seasonal_phase": 60,    # peaks early spring (Mar)
+        "seasonal_amp":   0.25,
+        "campaign_weeks": [6, 7, 41, 42],   # Feb product launch + Oct push
     },
-    "Paid Social": {
-        "base_spend":    22_000,
-        "cpm":           11.0,
-        "ctr":           0.012,
-        "cvr":           0.018,
-        "roas_base":     2.8,
-        "adstock_decay": 0.45,
+    "Facebook / Instagram": {
+        "base_spend":    14_000,
+        "cpm":           12.0,   # Meta CPM benchmark
+        "ctr":           0.014,
+        "cvr":           0.020,
+        "roas_base":     3.1,
+        "adstock_decay": 0.40,   # ~2 week half-life
         "saturation_k":  0.00004,
+        "seasonal_phase": 310,   # peaks Q4 holiday season (Nov)
+        "seasonal_amp":   0.35,
+        "campaign_weeks": [14, 15, 48, 49],  # Apr brand awareness + Nov Black Friday
+    },
+    "TikTok": {
+        "base_spend":    10_000,
+        "cpm":           9.5,    # lower CPM, younger audience
+        "ctr":           0.025,  # higher CTR — native video format
+        "cvr":           0.014,
+        "roas_base":     2.4,
+        "adstock_decay": 0.35,   # viral content decays fast
+        "saturation_k":  0.00006,
+        "seasonal_phase": 120,   # peaks late spring/summer (May)
+        "seasonal_amp":   0.30,
+        "campaign_weeks": [19, 20, 30, 31],  # May viral push + Jul summer
+    },
+    "Reddit": {
+        "base_spend":    5_000,
+        "cpm":           6.5,    # niche communities, lower CPM
+        "ctr":           0.008,
+        "cvr":           0.012,
+        "roas_base":     1.9,
+        "adstock_decay": 0.25,   # community posts are timely
+        "saturation_k":  0.00008, # niche audience saturates quickly
+        "seasonal_phase": 30,    # peaks winter/early Q1 (Feb)
+        "seasonal_amp":   0.20,
+        "campaign_weeks": [10, 11, 36, 37],  # Mar gaming season + Sep
     },
     "Display": {
         "base_spend":    12_000,
@@ -40,15 +76,21 @@ CHANNELS = {
         "roas_base":     1.5,
         "adstock_decay": 0.55,
         "saturation_k":  0.00003,
+        "seasonal_phase": 240,   # peaks late summer/back-to-school (Aug)
+        "seasonal_amp":   0.25,
+        "campaign_weeks": [33, 34, 46, 47],  # Aug back-to-school + Nov
     },
     "TV / CTV": {
         "base_spend":    45_000,
         "cpm":           25.0,
-        "ctr":           0.0,   # Not directly clickable
+        "ctr":           0.0,    # Not directly clickable
         "cvr":           0.0,
         "roas_base":     1.8,
-        "adstock_decay": 0.70,  # TV has long carryover
+        "adstock_decay": 0.70,   # TV has long carryover
         "saturation_k":  0.00001,
+        "seasonal_phase": 330,   # peaks deep Q4 / NFL playoffs (Dec)
+        "seasonal_amp":   0.40,
+        "campaign_weeks": [1, 2, 44, 45, 50, 51],  # Super Bowl + Nov/Dec flight
     },
     "Email": {
         "base_spend":    3_500,
@@ -58,6 +100,10 @@ CHANNELS = {
         "roas_base":     8.5,
         "adstock_decay": 0.10,
         "saturation_k":  0.0001,
+        "seasonal_phase": 290,   # peaks pre-holiday (Oct-Nov)
+        "seasonal_amp":   0.35,
+        "campaign_weeks": [4, 5, 23, 24, 43, 44],  # Win-back Jan + summer promo + holiday
+        "campaign_multiplier": 4.0,   # Email campaigns are 4× base (batch sends)
     },
     "Influencer": {
         "base_spend":    15_000,
@@ -67,6 +113,9 @@ CHANNELS = {
         "roas_base":     2.3,
         "adstock_decay": 0.50,
         "saturation_k":  0.00003,
+        "seasonal_phase": 165,   # peaks early summer (Jun)
+        "seasonal_amp":   0.30,
+        "campaign_weeks": [25, 26, 27, 38, 39],  # Summer festival season + Sep fall
     },
 }
 
@@ -103,19 +152,32 @@ def generate(
     weeks = pd.date_range(start_date, end_date, freq="W-MON")
     n = len(weeks)
 
-    # Seasonal budget index (higher in Q4 and spring)
     day_of_year = weeks.dayofyear.values
-    budget_seasonal = 1.0 + 0.30 * np.sin(2 * np.pi * (day_of_year - 60) / 365)
 
     # Overall budget growth (10% YoY)
     trend = 1.0 + 0.10 * np.arange(n) / n
 
+    # Week-of-year array for campaign burst matching
+    week_of_year = weeks.isocalendar().week.values
+
     records = []
     for channel, cfg in CHANNELS.items():
-        # Weekly spend with seasonal + trend + noise
+        # Per-channel seasonal budget index — distinct phase per channel
+        # (avoids the near-perfect multicollinearity from shared seasonal).
+        phase = cfg.get("seasonal_phase", 60)
+        amp   = cfg.get("seasonal_amp",   0.30)
+        budget_seasonal = 1.0 + amp * np.sin(2 * np.pi * (day_of_year - phase) / 365)
+
+        # Campaign burst multiplier: elevated spend during designated push weeks
+        campaign_wks = set(cfg.get("campaign_weeks", []))
+        burst_mult   = cfg.get("campaign_multiplier", 2.0)
+        burst = np.where(np.isin(week_of_year, list(campaign_wks)), burst_mult, 1.0)
+
+        # Weekly spend with seasonal + burst + trend + noise
         spend = (
             cfg["base_spend"]
             * budget_seasonal
+            * burst
             * trend
             * (1 + rng.normal(0, 0.08, n))
         ).clip(min=100)

@@ -25,7 +25,9 @@ from sklearn.preprocessing import StandardScaler
 
 MEDIA_CHANNELS = [
     "Paid Search",
-    "Paid Social",
+    "Facebook / Instagram",
+    "TikTok",
+    "Reddit",
     "Display",
     "TV / CTV",
     "Email",
@@ -80,6 +82,7 @@ def _prepare_features(
         .reset_index()
     )
 
+    spend_wide[date_col] = pd.to_datetime(spend_wide[date_col])
     df = spend_wide.merge(sales_agg, on=date_col, how="inner")
     df[date_col] = pd.to_datetime(df[date_col])
     df = df.sort_values(date_col).reset_index(drop=True)
@@ -166,18 +169,23 @@ def run_mmm(
     y_all_pred = model.predict(X_all_s)
     coef = dict(zip(feature_cols, model.coef_))
 
-    # Channel contribution: attribution via coefficient * scaled feature mean
+    # Channel contribution: convert coefficient back to original feature space
+    # so that the mean contribution is always non-negative.
+    # coef_original = model.coef_ / scaler.scale_  →  revenue per unit of feature
+    # contribution = coef_original * mean(feature across all weeks)
     X_all_arr = scaler.transform(X)
     transformed_cols = [f"{ch}_transformed" for ch in MEDIA_CHANNELS]
     calendar_cols    = ["sin_week", "cos_week", "trend"]
+
+    # Convert Ridge coefficients from scaled space back to original space
+    coef_original = model.coef_ / scaler.scale_   # shape: (n_features,)
 
     media_contributions = {}
     for ch in MEDIA_CHANNELS:
         col = f"{ch}_transformed"
         col_idx = feature_cols.index(col)
-        media_contributions[ch] = (
-            model.coef_[col_idx] * X_all_arr[:, col_idx]
-        ).mean()
+        # Use mean of ALL weeks (not just training) in original space
+        media_contributions[ch] = coef_original[col_idx] * X[col].mean()
 
     total_media = sum(media_contributions.values())
     total_pred  = y_all_pred.mean()
@@ -200,20 +208,33 @@ def run_mmm(
         "contribution_pct", ascending=False
     ).reset_index(drop=True)
 
-    # Sales decomposition
+    # Sales decomposition — use original-space coefficients for all components
+    # so contributions are interpretable in revenue ($) terms.
     base_pred = model.intercept_
     calendar_idx = [feature_cols.index(c) for c in calendar_cols]
+    # intercept already in original scale; calendar terms: coef_orig * X_orig
+    X_all_np = X.values  # original (unscaled) features
     calendar_contrib = sum(
-        model.coef_[i] * X_all_arr[:, i] for i in calendar_idx
+        coef_original[i] * X_all_np[:, i] for i in calendar_idx
     )
+    # Adjust intercept: Ridge intercept absorbs the scaling offset
+    # y_hat = intercept + Σ coef_scaled * X_scaled
+    #       = intercept + Σ coef_orig * (X - mean_train) / std_train
+    #       = (intercept - Σ coef_orig * mean_train / std_train)
+    #         + Σ coef_orig * X / std_train
+    # The model.intercept_ already accounts for this, so we use
+    # y_all_pred - calendar_contrib - media_contrib_total as "base" to ensure
+    # decomposition adds up exactly.
     media_contrib_total = np.array([
-        model.coef_[feature_cols.index(f"{ch}_transformed")] * X_all_arr[:, feature_cols.index(f"{ch}_transformed")]
+        coef_original[feature_cols.index(f"{ch}_transformed")]
+        * X_all_np[:, feature_cols.index(f"{ch}_transformed")]
         for ch in MEDIA_CHANNELS
     ]).sum(axis=0)
+    base_contrib = y_all_pred - calendar_contrib - media_contrib_total
 
     decomp_df = pd.DataFrame({
         "week_start": df[date_col].values,
-        "base_sales":  base_pred + calendar_contrib,
+        "base_sales":  base_contrib,
         "media_sales": media_contrib_total,
         "total_predicted": y_all_pred,
         "actual_sales": y.values,
