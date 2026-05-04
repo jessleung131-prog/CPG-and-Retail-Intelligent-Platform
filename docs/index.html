@@ -409,6 +409,124 @@
         </div>
       </div>
     </div>
+
+    <!-- Budget Optimizer — full-width below the 2-col grid -->
+    <div class="card" style="margin-top:20px;">
+      <h3>Budget Optimizer</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6;">
+        Same total budget ($15.0M). Shift $970K from low-ROAS channels (TikTok 1.83×, Display 1.81×, Reddit 1.61×)
+        into Email, Paid Search, and FB/IG — the three highest-returning channels.
+        TV/CTV held as brand anchor. Conservative projected incremental revenue: <strong style="color:var(--green);">+$2.1M</strong>.
+      </p>
+
+      <!-- KPI impact row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;">
+        <div style="background:var(--light);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Budget Reallocated</div>
+          <div style="font-size:26px;font-weight:700;color:var(--navy);margin:6px 0;">$970K</div>
+          <div style="font-size:12px;color:var(--muted);">shifted across 6 channels</div>
+        </div>
+        <div style="background:#F0FDF4;border-radius:10px;padding:16px;text-align:center;border:1px solid #BBF7D0;">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Projected Revenue Gain</div>
+          <div style="font-size:26px;font-weight:700;color:var(--green);margin:6px 0;">+$2.1M</div>
+          <div style="font-size:12px;color:var(--muted);">without increasing total spend</div>
+        </div>
+        <div style="background:var(--light);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Blended ROAS Improvement</div>
+          <div style="font-size:26px;font-weight:700;color:var(--teal);margin:6px 0;">2.21× → 2.35×</div>
+          <div style="font-size:12px;color:var(--muted);">+6% overall efficiency</div>
+        </div>
+      </div>
+
+      <!-- Side-by-side allocation charts -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Current Allocation</div>
+          <div style="height:240px;"><canvas id="chart-alloc-current"></canvas></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Optimized Allocation ✦</div>
+          <div style="height:240px;"><canvas id="chart-alloc-optimized"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Channel-level action table -->
+      <table style="margin-top:20px;font-size:12px;">
+        <tr style="background:var(--light);">
+          <th style="text-align:left;padding:8px 12px;">Channel</th>
+          <th style="text-align:right;padding:8px 12px;">ROAS</th>
+          <th style="text-align:right;padding:8px 12px;">Current Spend</th>
+          <th style="text-align:right;padding:8px 12px;">Optimized Spend</th>
+          <th style="text-align:right;padding:8px 12px;">Change</th>
+          <th style="text-align:left;padding:8px 12px;">Action</th>
+        </tr>
+        <tr>
+          <td style="padding:7px 12px;font-weight:600;">Email</td>
+          <td style="text-align:right;padding:7px 12px;color:var(--green);font-weight:700;">6.39×</td>
+          <td style="text-align:right;padding:7px 12px;">$527K</td>
+          <td style="text-align:right;padding:7px 12px;font-weight:600;">$1,327K</td>
+          <td style="text-align:right;padding:7px 12px;color:var(--green);font-weight:600;">+$800K</td>
+          <td style="padding:7px 12px;"><span class="pill" style="background:#D1FAE5;color:#065F46;">Scale up 2.5×</span></td>
+        </tr>
+        <tr style="background:var(--light);">
+          <td style="padding:7px 12px;font-weight:600;">Paid Search</td>
+          <td style="text-align:right;padding:7px 12px;color:var(--teal);font-weight:700;">2.53×</td>
+          <td style="text-align:right;padding:7px 12px;">$2,105K</td>
+          <td style="text-align:right;padding:7px 12px;font-weight:600;">$2,205K</td>
+          <td style="text-align:right;padding:7px 12px;color:var(--teal);">+$100K</td>
+          <td style="padding:7px 12px;"><span class="pill" style="background:#CCFBF1;color:#0F766E;">Increase</span></td>
+        </tr>
+        <tr>
+          <td style="padding:7px 12px;font-weight:600;">FB / IG</td>
+          <td style="text-align:right;padding:7px 12px;color:var(--teal);font-weight:700;">2.60×</td>
+          <td style="text-align:right;padding:7px 12px;">$1,654K</td>
+          <td style="text-align:right;padding:7px 12px;font-weight:600;">$1,724K</td>
+          <td style="text-align:right;padding:7px 12px;color:var(--teal);">+$70K</td>
+          <td style="padding:7px 12px;"><span class="pill" style="background:#CCFBF1;color:#0F766E;">Increase</span></td>
+        </tr>
+        <tr style="background:var(--light);">
+          <td style="padding:7px 12px;">TV / CTV</td>
+          <td style="text-align:right;padding:7px 12px;">2.34×</td>
+          <td style="text-align:right;padding:7px 12px;">$5,606K</td>
+          <td style="text-align:right;padding:7px 12px;">$5,606K</td>
+          <td style="text-align:right;padding:7px 12px;color:var(--muted);">—</td>
+          <td style="padding:7px 12px;"><span class="pill" style="background:#F3F4F6;color:#6B7280;">Hold (brand)</span></td>
+        </tr>
+        <tr>
+          <td style="padding:7px 12px;">Influencer</td>
+          <td style="text-align:right;padding:7px 12px;">2.29×</td>
+          <td style="text-align:right;padding:7px 12px;">$1,854K</td>
+          <td style="text-align:right;padding:7px 12px;">$1,854K</td>
+          <td style="text-align:right;padding:7px 12px;color:var(--muted);">—</td>
+          <td style="padding:7px 12px;"><span class="pill" style="background:#F3F4F6;color:#6B7280;">Hold</span></td>
+        </tr>
+        <tr style="background:var(--light);">
+          <td style="padding:7px 12px;">TikTok</td>
+          <td style="text-align:right;padding:7px 12px;color:#B45309;">1.83×</td>
+          <td style="text-align:right;padding:7px 12px;">$1,209K</td>
+          <td style="text-align:right;padding:7px 12px;font-weight:600;">$846K</td>
+          <td style="text-align:right;padding:7px 12px;color:#DC2626;">−$363K</td>
+          <td style="padding:7px 12px;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">Reduce 30%</span></td>
+        </tr>
+        <tr>
+          <td style="padding:7px 12px;">Display</td>
+          <td style="text-align:right;padding:7px 12px;color:#B45309;">1.81×</td>
+          <td style="text-align:right;padding:7px 12px;">$1,437K</td>
+          <td style="text-align:right;padding:7px 12px;font-weight:600;">$1,006K</td>
+          <td style="text-align:right;padding:7px 12px;color:#DC2626;">−$431K</td>
+          <td style="padding:7px 12px;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">Reduce 30%</span></td>
+        </tr>
+        <tr style="background:var(--light);">
+          <td style="padding:7px 12px;">Reddit</td>
+          <td style="text-align:right;padding:7px 12px;color:#B45309;">1.61×</td>
+          <td style="text-align:right;padding:7px 12px;">$588K</td>
+          <td style="text-align:right;padding:7px 12px;font-weight:600;">$411K</td>
+          <td style="text-align:right;padding:7px 12px;color:#DC2626;">−$176K</td>
+          <td style="padding:7px 12px;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">Reduce 30%</span></td>
+        </tr>
+      </table>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px;">* Incremental revenue projection assumes 55% of gross ROAS delta applies at margin (accounts for diminishing returns as Email scales). TV/CTV held as brand-building anchor despite moderate ROAS.</p>
+    </div>
   </div>
 
   <!-- ── API ── -->
@@ -856,6 +974,45 @@ function initModelCharts() {
         y: { ticks: { callback: v => v + 'x' }, grid: { color: '#EEF2F7' } }
       }
     }
+  });
+
+  // ── Budget Optimizer Charts ──
+  const allocChannels = ['TV/CTV', 'Paid Search', 'Influencer', 'FB / IG', 'Display', 'TikTok', 'Reddit', 'Email'];
+  const allocCurrent  = [5606, 2105, 1854, 1654, 1437, 1209,  588,  527];
+  const allocOptimized= [5606, 2205, 1854, 1724, 1006,  846,  411, 1327];
+  const allocColors   = ['#F04438','#1A2E4A','#7C3AED','#2D4A6B',AMBER,'#0891B2',MUTED,TEAL];
+
+  const barOpts = {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.x.toLocaleString() + 'K' } }
+    },
+    scales: {
+      x: { ticks: { callback: v => '$' + v + 'K' }, grid: { color: '#EEF2F7' }, max: 6200 },
+      y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+    }
+  };
+
+  new Chart(document.getElementById('chart-alloc-current'), {
+    type: 'bar',
+    data: {
+      labels: allocChannels,
+      datasets: [{ label: 'Current Spend ($K)', data: allocCurrent,
+        backgroundColor: allocColors.map(c => c + 'CC'), borderRadius: 4 }]
+    },
+    options: barOpts
+  });
+
+  new Chart(document.getElementById('chart-alloc-optimized'), {
+    type: 'bar',
+    data: {
+      labels: allocChannels,
+      datasets: [{ label: 'Optimized Spend ($K)', data: allocOptimized,
+        backgroundColor: allocColors, borderRadius: 4 }]
+    },
+    options: barOpts
   });
 }
 </script>

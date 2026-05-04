@@ -285,6 +285,76 @@ def _slide_actions(prs: Presentation, report: dict):
         top += Inches(1.05)
 
 
+def _slide_budget_optimizer(prs: Presentation, report: dict):
+    """Budget reallocation slide derived from MMM ROAS output."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    _set_bg(slide, LIGHT)
+
+    _add_rect(slide, 0, 0, SLIDE_W, Inches(1.1), GREEN)
+    _add_textbox(slide, Inches(0.5), Inches(0.2), Inches(12), Inches(0.7),
+                 "Budget Optimizer — Same Spend, More Revenue", font_size=24, bold=True, color=WHITE)
+
+    # Subtitle
+    _add_textbox(slide, Inches(0.6), Inches(1.2), Inches(12), Inches(0.45),
+                 "Shift $970K from low-ROAS channels into Email, Paid Search, and FB/IG. "
+                 "Total budget unchanged at $15.0M.",
+                 font_size=13, color=GREY)
+
+    # Impact KPI boxes
+    kpi_data = [
+        (TEAL,  "$970K",   "Reallocated"),
+        (GREEN, "+$2.1M",  "Proj. Revenue Gain"),
+        (NAVY,  "2.21×→2.35×", "Blended ROAS"),
+    ]
+    for i, (color, val, lbl) in enumerate(kpi_data):
+        _kpi_box(slide, Inches(0.5 + i * 4.2), Inches(1.85), lbl, val, color=color)
+
+    # Reallocation table
+    rows = [
+        ("Email",      "6.39×", "$527K",   "$1,327K", "+$800K",  "Scale 2.5×"),
+        ("Paid Search","2.53×", "$2,105K", "$2,205K", "+$100K",  "Increase"),
+        ("FB / IG",    "2.60×", "$1,654K", "$1,724K", "+$70K",   "Increase"),
+        ("TV/CTV",     "2.34×", "$5,606K", "$5,606K", "—",       "Hold (brand)"),
+        ("Influencer", "2.29×", "$1,854K", "$1,854K", "—",       "Hold"),
+        ("TikTok",     "1.83×", "$1,209K", "$846K",   "−$363K",  "Reduce 30%"),
+        ("Display",    "1.81×", "$1,437K", "$1,006K", "−$431K",  "Reduce 30%"),
+        ("Reddit",     "1.61×", "$588K",   "$411K",   "−$176K",  "Reduce 30%"),
+    ]
+    headers = ["Channel", "ROAS", "Current", "Optimized", "Change", "Action"]
+    col_x   = [0.5, 2.4, 3.8, 5.2, 6.6, 8.0]
+    col_w   = [1.7, 1.2, 1.2, 1.2, 1.2, 2.5]
+
+    top = Inches(3.55)
+    # Header row
+    _add_rect(slide, Inches(0.4), top, Inches(12.5), Inches(0.32), NAVY)
+    for j, h in enumerate(headers):
+        _add_textbox(slide, Inches(col_x[j]), top + Inches(0.04),
+                     Inches(col_w[j]), Inches(0.28), h,
+                     font_size=10, bold=True, color=WHITE)
+    top += Inches(0.34)
+
+    for r_idx, row in enumerate(rows):
+        bg = RGBColor(0xF4, 0xF7, 0xFB) if r_idx % 2 == 0 else WHITE
+        _add_rect(slide, Inches(0.4), top, Inches(12.5), Inches(0.38), bg)
+        for j, cell in enumerate(row):
+            cell_color = NAVY
+            if j == 4:  # Change column
+                if cell.startswith("+"):  cell_color = GREEN
+                elif cell.startswith("−"): cell_color = RED
+            elif j == 1:  # ROAS
+                val = float(row[1].replace("×",""))
+                cell_color = GREEN if val >= 2.5 else (AMBER if val >= 1.9 else RED)
+            _add_textbox(slide, Inches(col_x[j]), top + Inches(0.04),
+                         Inches(col_w[j]), Inches(0.32), cell,
+                         font_size=11, bold=(j == 4 and cell != "—"),
+                         color=cell_color)
+        top += Inches(0.40)
+
+    _add_textbox(slide, Inches(0.5), Inches(7.15), Inches(12), Inches(0.28),
+                 "* Incremental revenue assumes 55% of gross ROAS delta applies at margin (accounts for diminishing returns as Email scales).",
+                 font_size=9, color=GREY)
+
+
 # ── Main entry point ──────────────────────────────────────────────────────────
 
 def generate_deck(
@@ -319,6 +389,7 @@ def generate_deck(
     _slide_title(prs, report)
     _slide_exec_summary(prs, report)
     _slide_channel_highlights(prs, report)
+    _slide_budget_optimizer(prs, report)
     _slide_funnel(prs, report)
     _slide_risks_opportunities(prs, report)
     _slide_actions(prs, report)
