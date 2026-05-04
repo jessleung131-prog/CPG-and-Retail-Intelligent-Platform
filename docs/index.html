@@ -374,9 +374,34 @@
       </div>
 
       <div class="card">
-        <h3>Sales Forecast — 90-Day Horizon</h3>
-        <div class="chart-wrap">
-          <canvas id="chart-forecast"></canvas>
+        <h3>Sales Forecast — 24-Week Horizon</h3>
+
+        <!-- Series toggle buttons -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+          <button id="fc-btn-total"   onclick="switchFcView('total')"
+            style="padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:#1A2E4A;color:#fff;">Total</button>
+          <button id="fc-btn-online"  onclick="switchFcView('online')"
+            style="padding:5px 14px;border-radius:20px;border:1.5px solid #009B8E;cursor:pointer;font-size:12px;font-weight:600;background:#fff;color:#009B8E;">Online</button>
+          <button id="fc-btn-offline" onclick="switchFcView('offline')"
+            style="padding:5px 14px;border-radius:20px;border:1.5px solid #F5A623;cursor:pointer;font-size:12px;font-weight:600;background:#fff;color:#F5A623;">Offline / Stores</button>
+        </div>
+
+        <div style="height:260px;"><canvas id="chart-forecast"></canvas></div>
+
+        <!-- Mini KPI row below chart -->
+        <div id="fc-kpis" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
+          <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">2024 Avg/Week</div>
+            <div id="fc-kpi-avg" style="font-size:18px;font-weight:700;color:var(--navy);">$751K</div>
+          </div>
+          <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">H1 2025 Forecast</div>
+            <div id="fc-kpi-h1" style="font-size:18px;font-weight:700;color:var(--teal);">$772K</div>
+          </div>
+          <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
+            <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">Projected Growth</div>
+            <div id="fc-kpi-growth" style="font-size:18px;font-weight:700;color:var(--green);">+2.8%</div>
+          </div>
         </div>
       </div>
     </div>
@@ -924,35 +949,101 @@ function initDataCharts() {
 }
 
 // ── Model charts ──
+// ── Embedded forecast data (generated from parquet actuals + trend model) ──
+const FC = {
+  labelsA: ["2023-01-02","2023-01-09","2023-01-16","2023-01-23","2023-01-30","2023-02-06","2023-02-13","2023-02-20","2023-02-27","2023-03-06","2023-03-13","2023-03-20","2023-03-27","2023-04-03","2023-04-10","2023-04-17","2023-04-24","2023-05-01","2023-05-08","2023-05-15","2023-05-22","2023-05-29","2023-06-05","2023-06-12","2023-06-19","2023-06-26","2023-07-03","2023-07-10","2023-07-17","2023-07-24","2023-07-31","2023-08-07","2023-08-14","2023-08-21","2023-08-28","2023-09-04","2023-09-11","2023-09-18","2023-09-25","2023-10-02","2023-10-09","2023-10-16","2023-10-23","2023-10-30","2023-11-06","2023-11-13","2023-11-20","2023-11-27","2023-12-04","2023-12-11","2023-12-18","2023-12-25","2024-01-01","2024-01-08","2024-01-15","2024-01-22","2024-01-29","2024-02-05","2024-02-12","2024-02-19","2024-02-26","2024-03-04","2024-03-11","2024-03-18","2024-03-25","2024-04-01","2024-04-08","2024-04-15","2024-04-22","2024-04-29","2024-05-06","2024-05-13","2024-05-20","2024-05-27","2024-06-03","2024-06-10","2024-06-17","2024-06-24","2024-07-01","2024-07-08","2024-07-15","2024-07-22","2024-07-29","2024-08-05","2024-08-12","2024-08-19","2024-08-26","2024-09-02","2024-09-09","2024-09-16","2024-09-23","2024-09-30","2024-10-07","2024-10-14","2024-10-21","2024-10-28","2024-11-04","2024-11-11","2024-11-18","2024-11-25","2024-12-02","2024-12-09","2024-12-16","2024-12-23","2024-12-30"],
+  labelsF: ["2025-01-06","2025-01-13","2025-01-20","2025-01-27","2025-02-03","2025-02-10","2025-02-17","2025-02-24","2025-03-03","2025-03-10","2025-03-17","2025-03-24","2025-03-31","2025-04-07","2025-04-14","2025-04-21","2025-04-28","2025-05-05","2025-05-12","2025-05-19","2025-05-26","2025-06-02","2025-06-09","2025-06-16"],
+  online_a:  [171.4,176.2,180.4,185.9,220.7,240.4,248.2,256.4,234.6,227.7,235.3,243.7,250.5,254.9,259.3,266.3,271.2,349.3,343.0,352.9,348.2,316.5,283.2,281.9,283.2,289.0,322.7,312.8,315.7,307.8,264.3,253.3,250.7,240.9,233.8,227.4,221.9,215.6,210.0,205.9,196.5,193.9,189.9,261.1,287.7,284.3,283.4,286.7,293.1,295.0,298.0,307.1,196.6,201.4,202.9,213.2,243.3,274.1,277.3,296.6,280.0,258.7,264.1,276.3,287.5,289.9,296.3,301.2,309.0,371.0,398.7,401.3,403.6,381.4,325.4,326.2,320.3,318.0,363.1,359.6,355.8,349.4,315.8,288.1,284.6,274.4,269.9,260.8,256.6,244.6,240.0,233.6,226.8,223.9,214.4,258.7,332.4,325.8,318.2,321.4,329.1,335.3,341.1,344.0,103.4],
+  offline_a: [444.3,480.8,504.3,545.9,519.5,512.6,532.4,510.2,510.3,497.6,525.5,517.5,503.0,523.1,510.1,475.0,486.5,457.0,485.6,470.3,452.1,435.6,477.7,454.0,434.4,419.0,425.7,411.6,402.6,405.0,429.5,379.4,373.8,366.4,386.5,395.5,377.8,378.2,381.4,405.4,427.4,435.1,439.8,489.0,468.2,459.0,472.3,475.1,492.5,505.3,523.6,521.6,512.7,536.5,520.4,552.9,571.5,596.6,550.5,559.9,518.0,531.0,541.6,546.8,542.3,548.7,530.8,517.5,527.0,504.7,485.8,480.3,469.8,484.0,491.8,501.7,464.0,464.5,464.7,428.3,430.3,416.2,413.6,404.2,390.5,418.1,399.3,407.4,416.1,431.0,441.7,423.7,434.4,453.7,456.5,495.0,484.8,469.6,492.7,486.0,505.5,551.7,542.0,549.1,541.3],
+  total_a:   [615.7,657.0,684.8,731.8,740.2,753.0,780.6,766.6,744.9,725.2,760.7,761.2,753.5,777.9,769.5,741.3,757.6,806.2,828.6,823.2,800.3,752.1,761.0,735.9,717.6,707.9,748.4,724.4,718.4,712.8,693.8,632.7,624.5,607.2,620.2,622.9,599.8,593.8,591.5,611.4,623.9,629.0,629.8,750.1,755.8,743.2,755.7,761.8,785.7,800.3,821.6,828.7,709.3,737.9,723.3,766.2,814.8,870.7,827.8,856.4,798.0,789.8,805.7,823.1,829.8,838.6,827.1,818.7,835.9,875.7,884.6,881.6,873.4,865.3,817.2,827.9,784.3,782.4,827.7,787.9,786.1,765.6,729.5,692.3,675.1,692.5,669.3,668.2,672.7,675.6,681.7,657.3,661.2,677.6,671.0,753.7,817.2,795.4,810.9,807.5,834.7,887.0,883.1,893.1,644.8],
+  online_f:  [233.9,236.8,244.7,277.1,302.4,307.8,321.6,302.4,288.3,294.8,305.1,314.1,317.5,322.9,328.9,335.2,405.3,416.0,422.2,421.0,394.1,349.4,349.2,346.8],
+  offline_f: [512.9,516.6,553.6,549.7,558.8,545.7,539.3,518.3,518.5,537.7,536.3,526.8,540.1,524.6,500.5,510.9,485.0,489.9,479.5,465.1,464.0,489.0,482.0,453.4],
+  total_f:   [746.8,753.3,798.3,826.8,861.2,853.5,860.8,820.7,806.8,832.5,841.4,840.9,857.6,847.6,829.3,846.1,890.3,905.9,901.7,886.1,858.1,838.4,831.2,800.2],
+  online_fhi:[242.3,245.1,253.1,285.5,310.7,316.2,330.0,310.8,296.7,303.2,313.5,322.5,325.9,331.3,337.3,343.6,413.6,424.4,430.6,429.4,402.4,357.8,357.6,355.2],
+  online_flo:[225.5,228.4,236.3,268.8,294.0,299.5,313.2,294.0,279.9,286.4,296.7,305.8,309.1,314.6,320.5,326.8,396.9,407.6,413.8,412.6,385.7,341.0,340.8,338.5],
+  offline_fhi:[519.3,523.0,560.0,556.1,565.2,552.1,545.7,524.8,524.9,544.2,542.7,533.2,546.5,531.0,506.9,517.3,491.4,496.3,485.9,471.6,470.4,495.4,488.4,459.8],
+  offline_flo:[506.5,510.2,547.2,543.3,552.4,539.3,532.8,511.9,512.1,531.3,529.9,520.4,533.7,518.2,494.0,504.5,478.6,483.5,473.1,458.7,457.6,482.6,475.6,447.0],
+  total_fhi: [761.5,768.1,813.1,841.6,876.0,868.3,875.6,835.5,821.6,847.3,856.2,855.7,872.4,862.4,844.1,860.9,905.1,920.7,916.5,900.9,872.8,853.2,846.0,815.0],
+  total_flo: [732.0,738.5,783.5,812.0,846.4,838.7,846.1,806.0,792.0,817.8,826.6,826.2,842.8,832.8,814.5,831.3,875.5,891.1,886.9,871.3,843.3,823.6,816.4,785.5],
+};
+
+// KPI metadata per view
+const FC_KPIS = {
+  total:   { avg: '$782K', h1: '$839K', growth: '+7.3%' },
+  online:  { avg: '$294K', h1: '$327K', growth: '+11.1%' },
+  offline: { avg: '$488K', h1: '$512K', growth: '+5.0%' },
+};
+
+let fcChart = null;
+let fcView  = 'total';
+
+function switchFcView(view) {
+  fcView = view;
+  // Button styles
+  ['total','online','offline'].forEach(v => {
+    const btn = document.getElementById('fc-btn-' + v);
+    const colors = { total: '#1A2E4A', online: '#009B8E', offline: '#F5A623' };
+    if (v === view) {
+      btn.style.background = colors[v]; btn.style.color = '#fff'; btn.style.border = 'none';
+    } else {
+      btn.style.background = '#fff'; btn.style.color = colors[v];
+      btn.style.border = '1.5px solid ' + colors[v];
+    }
+  });
+  // Update KPIs
+  const k = FC_KPIS[view];
+  document.getElementById('fc-kpi-avg').textContent    = k.avg;
+  document.getElementById('fc-kpi-h1').textContent     = k.h1;
+  document.getElementById('fc-kpi-growth').textContent = k.growth;
+  // Update chart data
+  if (!fcChart) return;
+  const aColor = view === 'online' ? TEAL : view === 'offline' ? AMBER : NAVY;
+  const nA = FC.labelsA.length, nF = FC.labelsF.length;
+  const nullA = Array(nA).fill(null), nullF = Array(nF).fill(null);
+  fcChart.data.datasets[0].data = [...FC[view+'_a'], ...nullF];
+  fcChart.data.datasets[0].borderColor = aColor;
+  fcChart.data.datasets[1].data = [...nullA, ...FC[view+'_f']];
+  fcChart.data.datasets[2].data = [...nullA, ...FC[view+'_fhi']];
+  fcChart.data.datasets[3].data = [...nullA, ...FC[view+'_flo']];
+  fcChart.update();
+}
+
 function initModelCharts() {
   if (chartsInit.models) return; chartsInit.models = true;
 
-  // Forecast line
-  const labels = [];
-  const actual = [], forecast = [], upper = [], lower = [];
-  for (let i = 0; i < 120; i++) {
-    const d = new Date(2024, 8, 1); d.setDate(d.getDate() + i);
-    labels.push(d.toISOString().slice(5, 10));
-    const base = 180 + Math.sin(i * 0.15) * 30 + i * 0.4;
-    const noise = (Math.random() - 0.5) * 20;
-    if (i < 90) { actual.push(+(base + noise).toFixed(1)); forecast.push(null); upper.push(null); lower.push(null); }
-    else        { actual.push(null); forecast.push(+(base).toFixed(1)); upper.push(+(base + 22).toFixed(1)); lower.push(+(base - 22).toFixed(1)); }
-  }
+  // Combined labels: actuals + forecast
+  const allLabels = [...FC.labelsA, ...FC.labelsF];
+  const nA = FC.labelsA.length, nF = FC.labelsF.length;
+  const nullA = Array(nA).fill(null), nullF = Array(nF).fill(null);
 
-  new Chart(document.getElementById('chart-forecast'), {
+  fcChart = new Chart(document.getElementById('chart-forecast'), {
     type: 'line',
     data: {
-      labels,
+      labels: allLabels,
       datasets: [
-        { label: 'Actual',   data: actual,   borderColor: NAVY,  borderWidth: 2, pointRadius: 0, fill: false },
-        { label: 'Forecast', data: forecast, borderColor: TEAL,  borderWidth: 2, pointRadius: 0, borderDash: [5,3], fill: false },
-        { label: 'Upper CI', data: upper,    borderColor: 'transparent', backgroundColor: 'rgba(0,155,142,.15)', fill: '+1', pointRadius: 0 },
-        { label: 'Lower CI', data: lower,    borderColor: 'transparent', backgroundColor: 'rgba(0,155,142,.15)', fill: false, pointRadius: 0 },
+        { label: 'Actual',    data: [...FC.total_a, ...nullF],
+          borderColor: NAVY, borderWidth: 2, pointRadius: 0, fill: false },
+        { label: 'Forecast',  data: [...nullA, ...FC.total_f],
+          borderColor: TEAL, borderWidth: 2, pointRadius: 0, borderDash: [5,4], fill: false },
+        { label: 'Upper 90%', data: [...nullA, ...FC.total_fhi],
+          borderColor: 'transparent', backgroundColor: 'rgba(0,155,142,.12)',
+          fill: '+1', pointRadius: 0 },
+        { label: 'Lower 90%', data: [...nullA, ...FC.total_flo],
+          borderColor: 'transparent', backgroundColor: 'rgba(0,155,142,.12)',
+          fill: false, pointRadius: 0 },
       ]
     },
     options: { responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
-      scales: { x: { ticks: { maxTicksLimit: 8 }, grid: { display: false } }, y: { ticks: { callback: v => '$' + v + 'K' } } }
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 },
+          filter: item => item.text !== 'Lower 90%' } },
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': $' + ctx.parsed.y + 'K' } }
+      },
+      scales: {
+        x: { ticks: { maxTicksLimit: 10, font: { size: 10 } }, grid: { display: false } },
+        y: { ticks: { callback: v => '$' + v + 'K' }, grid: { color: '#EEF2F7' } }
+      }
     }
   });
 
@@ -1014,6 +1105,9 @@ function initModelCharts() {
     },
     options: barOpts
   });
+
+  // Initialise KPIs + button styles to match default "total" view
+  switchFcView('total');
 }
 </script>
 </body>
