@@ -195,9 +195,9 @@
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Top Channel ROAS</div>
-        <div class="kpi-value">6.17x</div>
+        <div class="kpi-value">6.39x</div>
         <div class="kpi-sub">Email outperforms all channels</div>
-        <span class="kpi-badge badge-amber">1.86× vs TV/CTV</span>
+        <span class="kpi-badge badge-amber">2.7× vs TV/CTV</span>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Test Coverage</div>
@@ -258,7 +258,7 @@
         </div>
         <div>
           <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Spend Smarter</div>
-          <p style="font-size:13px;color:var(--muted);line-height:1.6;">MMM reveals Email delivers 6.17× ROAS — the highest of 8 channels — yet receives &lt;4% of total media budget. The model makes reallocation defensible with data.</p>
+          <p style="font-size:13px;color:var(--muted);line-height:1.6;">MMM reveals Email delivers 6.39× ROAS — the highest of 8 channels — yet receives &lt;4% of total media budget. The model makes reallocation defensible with data.</p>
         </div>
         <div>
           <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Zero Reporting Hours</div>
@@ -405,7 +405,7 @@
         </div>
         <div class="row-item">
           <div class="row-icon icon-green">💡</div>
-          <div class="row-body"><strong>Key Finding</strong><span>Email delivers 6.17× ROAS — 1.86× better than TV/CTV at 3.32× — yet receives less than 4% of the media budget</span></div>
+          <div class="row-body"><strong>Key Finding</strong><span>Email delivers 6.39× ROAS — 2.7× better than TV/CTV at 2.34× — yet receives less than 4% of the media budget</span></div>
         </div>
       </div>
     </div>
@@ -521,7 +521,7 @@
         </div>
         <div style="background:#FFFBEB;border-left:4px solid var(--amber);padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:12px;">
           <strong style="font-size:13px;color:var(--navy);">Risk: Budget Misallocation</strong>
-          <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;">TV/CTV drives 37% of total attributed revenue at 3.32× ROAS. Email outperforms at 6.17×, yet receives 11× less budget. Reallocating 10% of TV spend to Email could yield ~$1.8M incremental revenue.</p>
+          <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;">TV/CTV at 2.34× ROAS consumes 37% of media budget. Email outperforms at 6.39×, yet receives 11× less budget. Reallocating 10% of TV spend to Email could yield ~$1.8M incremental revenue.</p>
         </div>
         <div style="background:#EFF6FF;border-left:4px solid #3B82F6;padding:14px 16px;border-radius:0 8px 8px 0;">
           <strong style="font-size:13px;color:var(--navy);">Opportunity: CRM Acceleration</strong>
@@ -708,7 +708,7 @@
           </div>
           <div class="row-item">
             <div class="row-icon icon-teal">11</div>
-            <div class="row-body"><strong>Business Impact</strong><span>$78.8M modelled · 6.17× Email ROAS · 24 tests</span></div>
+            <div class="row-body"><strong>Business Impact</strong><span>$78.8M modelled · 6.39× Email ROAS · 24 tests</span></div>
           </div>
           <div class="row-item">
             <div class="row-icon icon-amber">12</div>
@@ -736,7 +736,7 @@
           </div>
           <div style="background:#FFFBEB;border-left:4px solid var(--amber);padding:14px 16px;border-radius:0 8px 8px 0;">
             <strong style="font-size:13px;color:var(--navy);">Key Takeaway</strong>
-            <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">Email delivers 6.17× ROAS — highest of 8 channels — yet receives less than 4% of total budget. The platform makes this visible, quantifiable, and actionable in minutes.</p>
+            <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">Email delivers 6.39× ROAS — highest of 8 channels — yet receives less than 4% of total budget. The platform makes this visible, quantifiable, and actionable in minutes.</p>
           </div>
         </div>
       </div>
@@ -842,10 +842,10 @@ function initModelCharts() {
   new Chart(document.getElementById('chart-roas'), {
     type: 'bar',
     data: {
-      labels: ['Email', 'Paid Search', 'FB / IG', 'Reddit', 'TV/CTV', 'TikTok', 'Display', 'Influencer'],
+      labels: ['Email', 'FB / IG', 'Paid Search', 'TV/CTV', 'Influencer', 'TikTok', 'Display', 'Reddit'],
       datasets: [{ label: 'ROAS',
-        data: [6.17, 5.07, 3.64, 1.05, 3.32, 0.73, 0, 0],
-        backgroundColor: [TEAL, NAVY, SLATE, AMBER, '#F04438', '#7C3AED', MUTED, '#A3A3A3'],
+        data: [6.39, 2.60, 2.53, 2.34, 2.29, 1.83, 1.81, 1.61],
+        backgroundColor: [TEAL, NAVY, SLATE, '#F04438', '#7C3AED', '#0891B2', AMBER, MUTED],
         borderRadius: 4
       }]
     },
