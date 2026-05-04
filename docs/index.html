@@ -177,15 +177,15 @@
   <div id="panel-overview" class="panel active">
     <div class="tldr">
       <div class="tldr-label">TL;DR</div>
-      <p>A fully automated end-to-end analytics platform for CPG & Retail. <strong>2 years of synthetic data generated</strong>, a <strong>FastAPI dashboard</strong> serving 8 live endpoints, <strong>Prophet + XGBoost forecasting</strong> with confidence intervals, <strong>Ridge regression MMM</strong> attributing spend across 6 channels, and <strong>Claude AI</strong> writing the executive narrative — all in one repo.</p>
+      <p>A fully automated end-to-end analytics platform for CPG & Retail. <strong>2 years of synthetic data generated</strong>, a <strong>FastAPI dashboard</strong> serving 8 live endpoints, <strong>Prophet + XGBoost forecasting</strong> with confidence intervals, <strong>Ridge regression MMM</strong> attributing spend across 8 channels, and <strong>Claude AI</strong> writing the executive narrative — all in one repo.</p>
     </div>
 
     <div class="kpi-row">
       <div class="kpi-card">
         <div class="kpi-label">Revenue Modelled</div>
-        <div class="kpi-value">$73.3M</div>
+        <div class="kpi-value">$78.8M</div>
         <div class="kpi-sub">2-year synthetic dataset</div>
-        <span class="kpi-badge badge-green">↑ Blended 2.32x ROAS</span>
+        <span class="kpi-badge badge-green">Online + Offline channels</span>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">CRM Contacts</div>
@@ -195,9 +195,9 @@
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Top Channel ROAS</div>
-        <div class="kpi-value">6.79x</div>
+        <div class="kpi-value">6.17x</div>
         <div class="kpi-sub">Email outperforms all channels</div>
-        <span class="kpi-badge badge-amber">4.5× vs TV/CTV</span>
+        <span class="kpi-badge badge-amber">1.86× vs TV/CTV</span>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Test Coverage</div>
@@ -216,7 +216,7 @@
         </div>
         <div class="row-item">
           <div class="row-icon icon-green">✓</div>
-          <div class="row-body"><strong>Siloed attribution tools</strong><span>Single MMM model attributes revenue across all 6 media channels simultaneously</span></div>
+          <div class="row-body"><strong>Siloed attribution tools</strong><span>Single MMM model attributes revenue across all 8 media channels simultaneously</span></div>
         </div>
         <div class="row-item">
           <div class="row-icon icon-green">✓</div>
@@ -258,7 +258,7 @@
         </div>
         <div>
           <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Spend Smarter</div>
-          <p style="font-size:13px;color:var(--muted);line-height:1.6;">MMM reveals Email delivers 4.5× better ROAS than TV/CTV — yet receives 13× less budget. The model makes budget reallocation defensible.</p>
+          <p style="font-size:13px;color:var(--muted);line-height:1.6;">MMM reveals Email delivers 6.17× ROAS — the highest of 8 channels — yet receives &lt;4% of total media budget. The model makes reallocation defensible with data.</p>
         </div>
         <div>
           <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">Zero Reporting Hours</div>
@@ -295,7 +295,7 @@
       <div class="kpi-card">
         <div class="kpi-label">Media Spend Rows</div>
         <div class="kpi-value">630</div>
-        <div class="kpi-sub">Weekly · 6 channels · with adstock</div>
+        <div class="kpi-sub">Weekly · 8 channels · with adstock</div>
         <span class="kpi-badge badge-blue">ROAS + CTR + CVR + CPA</span>
       </div>
     </div>
@@ -405,7 +405,7 @@
         </div>
         <div class="row-item">
           <div class="row-icon icon-green">💡</div>
-          <div class="row-body"><strong>Key Finding</strong><span>Email delivers 6.79× ROAS — 4.5× better than TV/CTV at 1.51× — yet receives a fraction of the budget</span></div>
+          <div class="row-body"><strong>Key Finding</strong><span>Email delivers 6.17× ROAS — 1.86× better than TV/CTV at 3.32× — yet receives less than 4% of the media budget</span></div>
         </div>
       </div>
     </div>
@@ -521,7 +521,7 @@
         </div>
         <div style="background:#FFFBEB;border-left:4px solid var(--amber);padding:14px 16px;border-radius:0 8px 8px 0;margin-bottom:12px;">
           <strong style="font-size:13px;color:var(--navy);">Risk: Budget Misallocation</strong>
-          <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;">TV/CTV receives 38% of spend but delivers only 1.51× ROAS. Shifting 15% to Email could yield $2.1M incremental revenue.</p>
+          <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;">TV/CTV drives 37% of total attributed revenue at 3.32× ROAS. Email outperforms at 6.17×, yet receives 11× less budget. Reallocating 10% of TV spend to Email could yield ~$1.8M incremental revenue.</p>
         </div>
         <div style="background:#EFF6FF;border-left:4px solid #3B82F6;padding:14px 16px;border-radius:0 8px 8px 0;">
           <strong style="font-size:13px;color:var(--navy);">Opportunity: CRM Acceleration</strong>
@@ -688,7 +688,7 @@
           </div>
           <div class="row-item">
             <div class="row-icon icon-teal">6</div>
-            <div class="row-body"><strong>Media Mix Modelling</strong><span>ROAS attribution across 6 channels</span></div>
+            <div class="row-body"><strong>Media Mix Modelling</strong><span>ROAS attribution across 8 channels</span></div>
           </div>
           <div class="row-item">
             <div class="row-icon icon-teal">7</div>
@@ -708,7 +708,7 @@
           </div>
           <div class="row-item">
             <div class="row-icon icon-teal">11</div>
-            <div class="row-body"><strong>Business Impact</strong><span>$73.3M modelled · 6.79× ROAS · 24 tests</span></div>
+            <div class="row-body"><strong>Business Impact</strong><span>$78.8M modelled · 6.17× Email ROAS · 24 tests</span></div>
           </div>
           <div class="row-item">
             <div class="row-icon icon-amber">12</div>
@@ -736,7 +736,7 @@
           </div>
           <div style="background:#FFFBEB;border-left:4px solid var(--amber);padding:14px 16px;border-radius:0 8px 8px 0;">
             <strong style="font-size:13px;color:var(--navy);">Key Takeaway</strong>
-            <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">Email delivers 4.5× better ROAS than TV/CTV — yet receives 13× less budget. The platform makes this visible, quantifiable, and actionable in minutes.</p>
+            <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">Email delivers 6.17× ROAS — highest of 8 channels — yet receives less than 4% of total budget. The platform makes this visible, quantifiable, and actionable in minutes.</p>
           </div>
         </div>
       </div>
@@ -842,10 +842,10 @@ function initModelCharts() {
   new Chart(document.getElementById('chart-roas'), {
     type: 'bar',
     data: {
-      labels: ['Email', 'Paid Search', 'Paid Social', 'Display', 'Influencer', 'TV/CTV'],
+      labels: ['Email', 'Paid Search', 'FB / IG', 'Reddit', 'TV/CTV', 'TikTok', 'Display', 'Influencer'],
       datasets: [{ label: 'ROAS',
-        data: [6.79, 4.12, 3.47, 2.81, 2.34, 1.51],
-        backgroundColor: [TEAL, NAVY, SLATE, AMBER, MUTED, '#F04438'],
+        data: [6.17, 5.07, 3.64, 1.05, 3.32, 0.73, 0, 0],
+        backgroundColor: [TEAL, NAVY, SLATE, AMBER, '#F04438', '#7C3AED', MUTED, '#A3A3A3'],
         borderRadius: 4
       }]
     },

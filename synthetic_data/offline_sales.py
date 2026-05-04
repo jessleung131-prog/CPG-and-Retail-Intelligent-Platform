@@ -46,9 +46,20 @@ def generate(
     start_date: str,
     end_date: str,
     seed: int = 42,
+    media_lift: "pd.Series | None" = None,
 ) -> pd.DataFrame:
     """
     Generate weekly offline sales data.
+
+    Args:
+        start_date:  ISO date string for first week.
+        end_date:    ISO date string for last week.
+        seed:        Random seed for reproducibility.
+        media_lift:  Optional Series indexed by week_start (date objects) with
+                     weekly media incremental revenue values.  When provided,
+                     weeks with higher media investment receive a proportional
+                     revenue lift (up to ~30 %), creating a causal link that
+                     the MMM can recover.
 
     Returns a DataFrame with columns:
         week_start, region, store_format, category,
@@ -64,6 +75,20 @@ def generate(
     time_frac = np.linspace(0, 1, n_weeks)
     seasonal = 1.0 + 0.20 * np.sin(2 * np.pi * (weeks.dayofyear.to_numpy() - 90) / 365)
     promo = _weekly_promo(pd.Series(weeks))
+
+    # Build a weekly media-driven multiplier (1.0 = no lift, up to ~1.30)
+    if media_lift is not None:
+        lift_vals = np.array([
+            float(media_lift.get(w.date(), 0.0)) for w in weeks
+        ])
+        lift_min, lift_max = lift_vals.min(), lift_vals.max()
+        if lift_max > lift_min:
+            lift_norm = (lift_vals - lift_min) / (lift_max - lift_min)  # 0→1
+        else:
+            lift_norm = np.zeros(n_weeks)
+        media_multiplier = 1.0 + 0.45 * lift_norm   # up to 45 % additive lift
+    else:
+        media_multiplier = np.ones(n_weeks)
 
     records = []
     for region, cfg in REGIONS.items():
@@ -85,7 +110,7 @@ def generate(
                 trend = 1.0 + 0.12 * time_frac  # 12 % growth over 2 years
 
                 rev_per_store = (
-                    base_rev_per_store * seasonal * trend * promo * noise
+                    base_rev_per_store * seasonal * trend * promo * noise * media_multiplier
                 ).clip(min=50)
 
                 total_rev = (rev_per_store * stores * fmt_weight).round(2)
