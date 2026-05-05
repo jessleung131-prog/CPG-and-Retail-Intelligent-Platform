@@ -29,7 +29,7 @@ import pandas as pd
 # Allow running from project root
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from synthetic_data import online_sales, offline_sales, crm_funnel, media_spend
+from synthetic_data import online_sales, offline_sales, crm_funnel, media_spend, account_revenue
 from config import settings
 
 OUTPUT_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -197,6 +197,22 @@ def run():
     elapsed = time.time() - t0
     summary["crm_funnel"] = {"rows": len(crm_df), "columns": len(crm_df.columns), "path": str(path)}
     print(f"    -> {len(crm_df):,} rows × {len(crm_df.columns)} cols  saved to {path}  ({elapsed:.1f}s)")
+
+    # ── 5. Account revenue ────────────────────────────────────────────────────────
+    t0 = time.time()
+    print("  [account_revenue]  Monthly account revenue time series...")
+    # Load CRM funnel to get closed-won accounts
+    crm_df = pd.read_parquet(OUTPUT_DIR / "crm_funnel.parquet")
+    acct_df, acct_summary = account_revenue.generate(crm_df, seed=seed)
+    acct_df.to_parquet(OUTPUT_DIR / "account_revenue.parquet", index=False)
+    acct_summary.to_parquet(OUTPUT_DIR / "account_summary.parquet", index=False)
+    elapsed = time.time() - t0
+    summary["account_revenue"] = {
+        "rows": len(acct_df),
+        "columns": len(acct_df.columns),
+        "path": str(OUTPUT_DIR / "account_revenue.parquet"),
+    }
+    print(f"    -> {len(acct_df):,} monthly rows, {len(acct_summary):,} accounts  ({elapsed:.1f}s)")
 
     print("\nDone. Summary:")
     for name, info in summary.items():

@@ -162,7 +162,9 @@
   <nav class="tabs">
     <div class="tab active" onclick="switchTab('overview')"><span class="tab-icon">📋</span> Executive Overview</div>
     <div class="tab" onclick="switchTab('data')"><span class="tab-icon">🗄️</span> Data Foundation</div>
-    <div class="tab" onclick="switchTab('models')"><span class="tab-icon">📈</span> Forecasting & MMM</div>
+    <div class="tab" onclick="switchTab('forecast')"><span class="tab-icon">📈</span> Forecasting</div>
+    <div class="tab" onclick="switchTab('mmm')"><span class="tab-icon">📡</span> MMM & Budget</div>
+    <div class="tab" onclick="switchTab('accounts')"><span class="tab-icon">🎯</span> Account Intelligence</div>
     <div class="tab" onclick="switchTab('api')"><span class="tab-icon">⚡</span> Dashboard API</div>
     <div class="tab" onclick="switchTab('insights')"><span class="tab-icon">🤖</span> AI Insights</div>
     <div class="tab" onclick="switchTab('monitoring')"><span class="tab-icon">🔔</span> Monitoring</div>
@@ -347,10 +349,10 @@
     </div>
   </div>
 
-  <!-- ── MODELS ── -->
-  <div id="panel-models" class="panel">
-    <p class="section-title">Forecasting & Media Mix Modelling</p>
-    <p class="section-sub">Chronological train / val / test splits (70 / 15 / 15) — no data leakage. Two forecast backends + Ridge regression MMM.</p>
+  <!-- ── FORECAST ── -->
+  <div id="panel-forecast" class="panel">
+    <p class="section-title">Sales Forecasting</p>
+    <p class="section-sub">Chronological train / val / test splits (70 / 15 / 15) — no data leakage. Prophet + XGBoost backends with 90% confidence intervals.</p>
 
     <div class="two-col">
       <div class="card">
@@ -405,6 +407,12 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ── MMM ── -->
+  <div id="panel-mmm" class="panel">
+    <p class="section-title">Media Mix Modelling & Budget Optimisation</p>
+    <p class="section-sub">Ridge regression MMM attributing revenue across 8 channels · Geometric adstock · Hill saturation · Budget reallocation simulator.</p>
 
     <div class="two-col">
       <div class="card">
@@ -551,6 +559,243 @@
         </tr>
       </table>
       <p style="font-size:11px;color:var(--muted);margin-top:10px;">* Incremental revenue projection assumes 55% of gross ROAS delta applies at margin (accounts for diminishing returns as Email scales). TV/CTV held as brand-building anchor despite moderate ROAS.</p>
+    </div>
+  </div>
+
+  <!-- ── ACCOUNTS ── -->
+  <div id="panel-accounts" class="panel">
+    <p class="section-title">Account Intelligence — Churn Risk &amp; Growth Signals</p>
+    <p class="section-sub">XGBoost churn scoring across 631 accounts · Revenue trajectory analysis · Intervention recommendations</p>
+
+    <!-- KPI row -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Active Accounts</div>
+        <div class="kpi-value">505</div>
+        <div class="kpi-sub">of 631 total closed-won</div>
+        <span class="kpi-badge badge-green">126 churned</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">High Risk Accounts</div>
+        <div class="kpi-value">82</div>
+        <div class="kpi-sub">churn probability ≥ 0.60 (active)</div>
+        <span class="kpi-badge badge-red">Needs intervention</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">High Growth Accounts</div>
+        <div class="kpi-value">155</div>
+        <div class="kpi-sub">top 25% MoM growth in cohort</div>
+        <span class="kpi-badge badge-blue">Expansion ready</span>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total ARR</div>
+        <div class="kpi-value">$25.3M</div>
+        <div class="kpi-sub">last_3m_avg × 12, active accounts</div>
+        <span class="kpi-badge badge-green">Annualised run rate</span>
+      </div>
+    </div>
+
+    <!-- Two-col: churn risk + growth signals -->
+    <div class="two-col">
+
+      <!-- Left: Top 10 Churn Risk -->
+      <div class="card">
+        <h3>&#9888; Churn Risk — Top 10 Accounts at Risk</h3>
+        <table style="font-size:12px;">
+          <tr>
+            <th>Account</th>
+            <th>Industry</th>
+            <th style="text-align:right;">Avg Mo. Rev</th>
+            <th style="text-align:center;">Churn Score</th>
+            <th>Action</th>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0020082</td>
+            <td>Mass Merchant</td>
+            <td style="text-align:right;">$0</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0022114</td>
+            <td>Specialty Retail</td>
+            <td style="text-align:right;">$7,372</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0020576</td>
+            <td>Foodservice</td>
+            <td style="text-align:right;">$6,830</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0020785</td>
+            <td>Drug Store</td>
+            <td style="text-align:right;">$10,591</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0021297</td>
+            <td>Specialty Retail</td>
+            <td style="text-align:right;">$6,484</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0021304</td>
+            <td>Foodservice</td>
+            <td style="text-align:right;">$8,128</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0021372</td>
+            <td>Grocery Retail</td>
+            <td style="text-align:right;">$9,462</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0020742</td>
+            <td>Drug Store</td>
+            <td style="text-align:right;">$0</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.98</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0022313</td>
+            <td>Grocery Retail</td>
+            <td style="text-align:right;">$2,577</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.98</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0020487</td>
+            <td>Specialty Retail</td>
+            <td style="text-align:right;">$3,006</td>
+            <td style="text-align:center;"><span class="pill" style="background:#FEE2E2;color:#991B1B;">0.98</span></td>
+            <td style="color:var(--muted);font-style:italic;">Urgent QBR</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Right: Top 10 High Growth -->
+      <div class="card">
+        <h3>&#128640; Growth Signals — Top 10 High-Potential Accounts</h3>
+        <table style="font-size:12px;">
+          <tr>
+            <th>Account</th>
+            <th>Industry</th>
+            <th style="text-align:right;">MoM Growth</th>
+            <th style="text-align:center;">Growth Score</th>
+            <th>Recommendation</th>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0015154</td>
+            <td>Foodservice</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+35.9%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">100</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0014581</td>
+            <td>Grocery Retail</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+26.3%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">100</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0001330</td>
+            <td>Drug Store</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+43.7%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">100</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0016112</td>
+            <td>Mass Merchant</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+8.6%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">100</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0006836</td>
+            <td>Specialty Retail</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+25.2%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">100</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0018660</td>
+            <td>Specialty Retail</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+11.1%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0010794</td>
+            <td>Grocery Retail</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+22.6%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0009870</td>
+            <td>Foodservice</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+34.2%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr style="background:var(--light);">
+            <td style="font-weight:600;">C0011665</td>
+            <td>Drug Store</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+42.9%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+          <tr>
+            <td style="font-weight:600;">C0002548</td>
+            <td>Mass Merchant</td>
+            <td style="text-align:right;color:var(--green);font-weight:600;">+5.4%</td>
+            <td style="text-align:center;"><span class="pill" style="background:#D1FAE5;color:#065F46;">99</span></td>
+            <td style="color:var(--muted);font-style:italic;">Scale · co-mktg</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Full-width: Churn Distribution donut -->
+    <div class="card">
+      <h3>Portfolio Churn Risk Distribution (Active Accounts)</h3>
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:center;">
+        <div style="height:260px;"><canvas id="chart-churn-dist"></canvas></div>
+        <div>
+          <div style="margin-bottom:18px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div style="width:14px;height:14px;border-radius:3px;background:#12B76A;flex-shrink:0;"></div>
+              <strong style="font-size:14px;">Low Risk — 399 accounts (79%)</strong>
+            </div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.6;padding-left:24px;">Churn probability &lt; 0.30. These accounts have stable or growing revenue trajectories. Recommended cadence: quarterly business review and proactive renewal outreach 90 days before term.</p>
+          </div>
+          <div style="margin-bottom:18px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div style="width:14px;height:14px;border-radius:3px;background:#F5A623;flex-shrink:0;"></div>
+              <strong style="font-size:14px;">Medium Risk — 24 accounts (5%)</strong>
+            </div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.6;padding-left:24px;">Churn probability 0.30–0.59. Revenue showing mixed signals — some negative trend or slowing growth. Assign account manager touchpoint within 30 days; share relevant case studies.</p>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div style="width:14px;height:14px;border-radius:3px;background:#F04438;flex-shrink:0;"></div>
+              <strong style="font-size:14px;">High Risk — 82 accounts (16%)</strong>
+            </div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.6;padding-left:24px;">Churn probability ≥ 0.60. Revenue declining or near-zero in recent months. Immediate QBR required — offer renewal incentive and executive sponsor outreach within 14 days.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -900,8 +1145,10 @@ function switchTab(name) {
   event.currentTarget.classList.add('active');
   document.getElementById('panel-' + name).classList.add('active');
   // lazy-init charts
-  if (name === 'data')    { initDataCharts(); }
-  if (name === 'models')  { initModelCharts(); }
+  if (name === 'data')     { initDataCharts(); }
+  if (name === 'forecast') { initModelCharts(); }
+  if (name === 'mmm')      { initModelCharts(); }
+  if (name === 'accounts') { initAccountCharts(); }
 }
 
 const TEAL  = '#009B8E';
@@ -1014,6 +1261,7 @@ function switchFcView(view) {
 
 function initModelCharts() {
   if (chartsInit.models) return; chartsInit.models = true;
+  // charts shared across forecast + mmm tabs — only init once
 
   // Combined labels: actuals + forecast
   const allLabels = [...FC.labelsA, ...FC.labelsF];
@@ -1112,6 +1360,45 @@ function initModelCharts() {
 
   // Initialise KPIs + button styles to match default "total" view
   switchFcView('total');
+}
+
+// ── Account Intelligence charts ──
+function initAccountCharts() {
+  if (chartsInit.accounts) return; chartsInit.accounts = true;
+
+  // Donut: Low / Medium / High risk (active accounts only)
+  new Chart(document.getElementById('chart-churn-dist'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Low Risk', 'Medium Risk', 'High Risk'],
+      datasets: [{
+        data: [399, 24, 82],
+        backgroundColor: ['#12B76A', '#F5A623', '#F04438'],
+        borderWidth: 2,
+        borderColor: '#FFFFFF',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: 12 }, padding: 16 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = ((ctx.parsed / total) * 100).toFixed(1);
+              return ` ${ctx.label}: ${ctx.parsed} accounts (${pct}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
 }
 </script>
 </body>
