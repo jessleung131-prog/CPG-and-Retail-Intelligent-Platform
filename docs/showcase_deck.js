@@ -448,6 +448,75 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
   });
 }
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SLIDE 7 — BUDGET OPTIMIZER
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  const s = pres.addSlide();
+  s.background = { color: C.light };
+  headerBar(s, "Budget Optimizer — Same Spend, More Revenue", C.navy);
+
+  s.addText("Shift $970K from low-ROAS channels into Email, Paid Search, and FB/IG. Total budget unchanged at $15.0M.", {
+    x: 0.5, y: 1.25, w: 12.3, h: 0.45,
+    fontSize: 13, color: C.slate, italic: true, margin: 0,
+  });
+
+  // KPI boxes
+  kpiBox(s, 0.5,  1.88, "$970K",      "Reallocated (Budget-Neutral)", C.teal);
+  kpiBox(s, 3.55, 1.88, "+$2.1M",     "Projected Revenue Gain",       C.green);
+  kpiBox(s, 6.6,  1.88, "2.21→2.35×", "Blended ROAS Improvement",    C.navy);
+  kpiBox(s, 9.65, 1.88, "6.39×",      "Email ROAS — Scale Priority",  C.teal);
+
+  // Reallocation table
+  const rows = [
+    { ch: "Email",       roas: "6.39×", cur: "$527K",   opt: "$1,327K", chg: "+$800K",  act: "Scale 2.5×",  up: true  },
+    { ch: "Paid Search", roas: "2.53×", cur: "$2,105K", opt: "$2,205K", chg: "+$100K",  act: "Increase",    up: true  },
+    { ch: "FB / IG",     roas: "2.60×", cur: "$1,654K", opt: "$1,724K", chg: "+$70K",   act: "Increase",    up: true  },
+    { ch: "TV/CTV",      roas: "2.34×", cur: "$5,606K", opt: "$5,606K", chg: "—",       act: "Hold",        up: null  },
+    { ch: "TikTok",      roas: "1.83×", cur: "$1,209K", opt: "$846K",   chg: "−$363K",  act: "Reduce 30%",  up: false },
+    { ch: "Display",     roas: "1.81×", cur: "$1,437K", opt: "$1,006K", chg: "−$431K",  act: "Reduce 30%",  up: false },
+    { ch: "Reddit",      roas: "1.61×", cur: "$588K",   opt: "$411K",   chg: "−$176K",  act: "Reduce 30%",  up: false },
+  ];
+  const cols = [
+    { label: "Channel",   x: 0.5,  w: 2.0 },
+    { label: "ROAS",      x: 2.6,  w: 1.2 },
+    { label: "Current",   x: 3.9,  w: 1.5 },
+    { label: "Optimised", x: 5.5,  w: 1.5 },
+    { label: "Change",    x: 7.1,  w: 1.5 },
+    { label: "Action",    x: 8.7,  w: 4.0 },
+  ];
+
+  // Header row
+  const tblTop = 3.5;
+  s.addShape(pres.shapes.RECTANGLE, { x: 0.4, y: tblTop, w: 12.5, h: 0.32,
+    fill: { color: C.navy }, line: { color: C.navy, width: 0 } });
+  cols.forEach(c => s.addText(c.label, {
+    x: c.x, y: tblTop + 0.02, w: c.w, h: 0.28,
+    fontSize: 10, bold: true, color: C.white, margin: 0,
+  }));
+
+  rows.forEach((r, i) => {
+    const y = tblTop + 0.34 + i * 0.44;
+    s.addShape(pres.shapes.RECTANGLE, { x: 0.4, y, w: 12.5, h: 0.40,
+      fill: { color: i % 2 === 0 ? "F4F7FB" : "FFFFFF" }, line: { color: "DDE3EC", width: 0.3 } });
+    const chgColor = r.up === true ? C.green : r.up === false ? C.red : C.grey;
+    const roasColor = parseFloat(r.roas) >= 2.5 ? C.green : parseFloat(r.roas) >= 1.9 ? C.amber : C.red;
+    [[r.ch, cols[0], C.navy, true], [r.roas, cols[1], roasColor, true],
+     [r.cur, cols[2], C.grey, false], [r.opt, cols[3], C.navy, false],
+     [r.chg, cols[4], chgColor, true], [r.act, cols[5], C.slate, false]
+    ].forEach(([txt, col, clr, bld]) => s.addText(txt, {
+      x: col.x, y: y + 0.05, w: col.w, h: 0.32,
+      fontSize: 10.5, bold: bld, color: clr, margin: 0,
+    }));
+  });
+
+  s.addText("* Ridge MMM with geometric adstock & positive coefficient constraints. Incremental revenue assumes 55% of gross ROAS delta applies at margin.", {
+    x: 0.5, y: 7.15, w: 12.3, h: 0.28,
+    fontSize: 9, color: C.grey, margin: 0,
+  });
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // SLIDE 7 — DASHBOARD API
 // ─────────────────────────────────────────────────────────────────────────────
@@ -692,6 +761,69 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
       fontSize: 10.5, color: C.grey, margin: 0,
     });
   });
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SLIDE 11 — ACCOUNT INTELLIGENCE
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  const s = pres.addSlide();
+  s.background = { color: C.light };
+  headerBar(s, "Account Intelligence — Churn Risk & Growth Signals", C.navy);
+
+  // KPI boxes
+  kpiBox(s, 0.5,  1.28, "505",    "Active Accounts (of 631)",       C.teal);
+  kpiBox(s, 3.55, 1.28, "82",     "High Churn Risk (≥ 0.60 prob)",  C.red);
+  kpiBox(s, 6.6,  1.28, "155",    "High Growth Accounts",           C.green);
+  kpiBox(s, 9.65, 1.28, "$25.3M", "Total ARR (Annualised)",         C.navy);
+
+  // Left panel — Churn Risk
+  tealAccent(s, 0.5, 2.85, 3.6);
+  s.addText("Churn Risk Scoring", {
+    x: 0.7, y: 2.9, w: 5.5, h: 0.42,
+    fontSize: 15, bold: true, color: C.navy, margin: 0,
+  });
+  s.addShape(pres.shapes.RECTANGLE, { x: 0.5, y: 2.85, w: 0.07, h: 3.6,
+    fill: { color: C.red }, line: { color: C.red, width: 0 } });
+
+  const churnItems = [
+    { t: "Model",    b: "XGBoost classifier (400 trees, depth 3) trained on pre-July 2024 accounts. Features: revenue trend slope, MoM growth, months since last order, deal size, volatility." },
+    { t: "Signals",  b: "Declining 3-month average, negative trend slope, and extended inactivity are the strongest predictors. Early-cohort churn peaks in months 4–6." },
+    { t: "Output",   b: "Each account scores 0–1. High ≥ 0.60 → QBR + renewal offer. Medium 0.30–0.59 → increased touchpoint cadence. Low < 0.30 → quarterly monitor." },
+  ];
+  churnItems.forEach((item, i) => {
+    const y = 3.42 + i * 1.05;
+    s.addText(item.t + ":", { x: 0.72, y, w: 5.5, h: 0.35,
+      fontSize: 12, bold: true, color: C.navy, margin: 0 });
+    s.addText(item.b, { x: 0.72, y: y + 0.34, w: 5.5, h: 0.62,
+      fontSize: 10.5, color: C.grey, margin: 0 });
+  });
+
+  // Right panel — Growth Signals
+  s.addShape(pres.shapes.RECTANGLE, { x: 6.9, y: 2.85, w: 0.07, h: 3.6,
+    fill: { color: C.green }, line: { color: C.green, width: 0 } });
+  s.addText("Growth Potential Scoring", {
+    x: 7.1, y: 2.9, w: 5.8, h: 0.42,
+    fontSize: 15, bold: true, color: C.navy, margin: 0,
+  });
+
+  const growthItems = [
+    { t: "Method",  b: "Percentile rank of 3-month MoM revenue growth within each industry cohort (Grocery, Drug Store, Foodservice, etc.). Top 25% = High Potential." },
+    { t: "Actions", b: "High Potential + Low Risk → co-marketing investment and trade spend priority. High Potential + Medium Risk → dedicated account manager and upsell proposal." },
+    { t: "Impact",  b: "155 accounts flagged as high-growth represent the expansion pipeline. If average deal value ($48K) grows 20%, that is $1.5M in incremental ARR without new acquisition." },
+  ];
+  growthItems.forEach((item, i) => {
+    const y = 3.42 + i * 1.05;
+    s.addText(item.t + ":", { x: 7.1, y, w: 5.8, h: 0.35,
+      fontSize: 12, bold: true, color: C.navy, margin: 0 });
+    s.addText(item.b, { x: 7.1, y: y + 0.34, w: 5.8, h: 0.62,
+      fontSize: 10.5, color: C.grey, margin: 0 });
+  });
+
+  // Divider
+  s.addShape(pres.shapes.LINE, { x: 6.65, y: 2.85, w: 0, h: 3.6,
+    line: { color: C.midgrey, width: 0.75 } });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
