@@ -128,7 +128,7 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
     line: { color: C.teal, width: 1, dashType: "sysDash" },
   });
 
-  s.addText("Built on GCP  ·  FastAPI  ·  BigQuery  ·  Claude AI  ·  Prophet / XGBoost / LightweightMMM", {
+  s.addText("Built on GCP  ·  FastAPI  ·  BigQuery  ·  Claude AI  ·  Prophet · XGBoost · Ridge MMM", {
     x: 1.2, y: 4.75, w: 11, h: 0.45,
     fontSize: 13, color: C.grey, margin: 0,
   });
@@ -267,7 +267,7 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
     { title: "Online Sales",    rows: "8,772",  desc: "Daily orders, revenue & AOV across DTC, Amazon, and Walmart.com — with seasonal peaks and promotional lift events.", accent: C.teal },
     { title: "Offline Sales",   rows: "8,400",  desc: "Weekly store-level POS data by region and format. Captures distribution expansion, regional mix and promo periods.", accent: C.navy },
     { title: "CRM Funnel",      rows: "25,019", desc: "Full lead → MQL → SQL → Opportunity → Closed Won pipeline with realistic conversion rates and deal values.", accent: C.amber },
-    { title: "Media Spend",     rows: "630",    desc: "Weekly channel spend across 6 channels with adstock carryover, Hill saturation, ROAS, CPC, CTR, and conversions.", accent: C.slate },
+    { title: "Media Spend",     rows: "630",    desc: "Weekly channel spend across 8 channels with adstock carryover, Hill saturation, ROAS, CPC, CTR, and conversions.", accent: C.slate },
   ];
 
   streams.forEach((st, i) => {
@@ -390,13 +390,13 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
   // Channel ROAS chart (using simulated data from our platform output)
   const chartData = [{
     name: "ROAS",
-    labels: ["Email", "Paid Search", "Influencer", "TV/CTV", "Paid Social", "Display"],
-    values: [6.79, 4.20, 2.30, 2.35, 2.80, 1.50],
+    labels: ["Email", "FB/Instagram", "Paid Search", "TV/CTV", "Influencer", "TikTok", "Display", "Reddit"],
+    values: [6.39, 2.60, 2.53, 2.34, 2.29, 1.83, 1.81, 1.61],
   }];
   s.addChart(pres.charts.BAR, chartData, {
     x: 0.5, y: 1.95, w: 6.5, h: 3.5,
     barDir: "bar",
-    chartColors: ["009B8E", "009B8E", "009B8E", "F5A623", "F5A623", "C0392B"],
+    chartColors: ["009B8E","009B8E","009B8E","F5A623","F5A623","C0392B","C0392B","C0392B"],
     chartArea: { fill: { color: "FFFFFF" }, roundedCorners: true },
     catAxisLabelColor: "1A2E4A",
     valAxisLabelColor: "6B7A90",
@@ -529,7 +529,7 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
     x: 0.4, y: 4.3, w: 5.0, h: 2.6,
     fill: { color: C.navy }, line: { color: C.teal, width: 1.5 },
   });
-  s.addText('"Email delivers 6.79x ROAS yet receives only 3% of media budget, while TV/CTV absorbs 39% of spend at a mediocre 2.35x return — rebalancing this allocation is the single highest-impact lever available."', {
+  s.addText('"Email delivers 6.39x ROAS yet receives only 3.5% of media budget, while TV/CTV absorbs 37% of spend at a mediocre 2.34x return — rebalancing this allocation is the single highest-impact lever available."', {
     x: 0.6, y: 4.5, w: 4.6, h: 2.2,
     fontSize: 11.5, color: C.midgrey, italic: true, margin: 0,
   });
@@ -581,17 +581,18 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
   // Slide thumbnails (represented as cards)
   const slides = [
     { num: "01", title: "Title",               fill: C.navy },
-    { num: "02", title: "Executive Summary",    fill: C.slate },
-    { num: "03", title: "Channel Highlights",   fill: C.teal },
-    { num: "04", title: "Sales & Funnel",       fill: C.navy },
-    { num: "05", title: "Risks & Opps",         fill: C.slate },
-    { num: "06", title: "Actions",              fill: C.teal },
+    { num: "02", title: "Exec Summary",         fill: C.slate },
+    { num: "03", title: "Channels",             fill: C.teal },
+    { num: "04", title: "Budget Optimizer",     fill: C.green },
+    { num: "05", title: "Sales Funnel",         fill: C.navy },
+    { num: "06", title: "Risks & Opps",         fill: C.slate },
+    { num: "07", title: "Actions",              fill: C.teal },
   ];
 
   slides.forEach((sl, i) => {
-    const x = 0.5 + i * 2.1;
+    const x = 0.5 + i * 1.77;
     s.addShape(pres.shapes.RECTANGLE, {
-      x, y: 2.05, w: 1.9, h: 1.3,
+      x, y: 2.05, w: 1.65, h: 1.3,
       fill: { color: sl.fill }, line: { color: sl.fill, width: 0 },
       shadow: makeShadow(),
     });
@@ -702,9 +703,9 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
   headerBar(s, "Business Impact — What This Platform Unlocks", C.teal);
 
   // Top KPIs
-  kpiBox(s, 0.5,  1.28, "$73.3M",  "Combined 2-Year Revenue Modelled", C.teal);
-  kpiBox(s, 3.55, 1.28, "2.32x",   "Blended ROAS Across All Channels", C.navy);
-  kpiBox(s, 6.6,  1.28, "6.79x",   "Email ROAS — Top Performing Channel", C.teal);
+  kpiBox(s, 0.5,  1.28, "$78.8M",  "Combined 2-Year Revenue Modelled", C.teal);
+  kpiBox(s, 3.55, 1.28, "2.21×",   "Blended ROAS · 8 Channels", C.navy);
+  kpiBox(s, 6.6,  1.28, "6.39×",   "Email ROAS — Top Performing Channel", C.teal);
   kpiBox(s, 9.65, 1.28, "25,019",  "CRM Contacts Tracked End-to-End", C.navy);
 
   // Value props
@@ -716,7 +717,7 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
     },
     {
       title: "Cut budget waste with MMM",
-      body:  "Our synthetic data shows Email delivers 4.5× better ROAS than TV/CTV — yet receives 13× less budget. MMM makes this visible and actionable.",
+      body:  "Our synthetic data shows Email delivers 2.7× better ROAS than TV/CTV — yet receives over 10× less budget. MMM makes this visible and actionable.",
       accent: C.amber,
     },
     {
@@ -816,6 +817,6 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
 }
 
 // ── Write file ─────────────────────────────────────────────────────────────────
-pres.writeFile({ fileName: "/Users/jessleung/Claude Code/CPG & Retail Intelligent Platform Project/outputs/CPG_Retail_Platform_Showcase.pptx" })
-  .then(() => console.log("✅  Deck saved: outputs/CPG_Retail_Platform_Showcase.pptx"))
+pres.writeFile({ fileName: "/Users/jessleung/Claude Code/CPG & Retail Intelligent Platform Project/docs/CPG_Retail_Platform_Showcase.pptx" })
+  .then(() => console.log("✅  Deck saved: docs/CPG_Retail_Platform_Showcase.pptx"))
   .catch(err => { console.error("Error:", err); process.exit(1); });
