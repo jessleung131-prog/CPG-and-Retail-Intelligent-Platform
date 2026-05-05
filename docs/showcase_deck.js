@@ -18,7 +18,7 @@ const makeShadow = () => ({ type: "outer", blur: 8, offset: 3, angle: 135, color
 
 const pres = new pptxgen();
 pres.layout = "LAYOUT_WIDE"; // 13.3" × 7.5"
-pres.title  = "CPG & Retail Intelligent Platform — Showcase";
+pres.title  = "CPG & Retail Intelligence Platform — Showcase";
 pres.author = "CPG Intelligence Platform";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -113,7 +113,7 @@ function stepBox(slide, x, y, num, title, body, accent = C.teal) {
     x: 1.2, y: 1.5, w: 11, h: 1.1,
     fontSize: 52, bold: true, color: C.white, margin: 0,
   });
-  s.addText("Intelligent Platform", {
+  s.addText("Intelligence Platform", {
     x: 1.2, y: 2.55, w: 11, h: 1.0,
     fontSize: 52, bold: true, color: C.teal, margin: 0,
   });

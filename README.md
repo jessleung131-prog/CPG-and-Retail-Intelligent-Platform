@@ -1,4 +1,4 @@
-# CPG & Retail Intelligent Platform
+# CPG & Retail Intelligence Platform
 
 A production-oriented analytics platform for CPG and retail clients operating across eCommerce and brick-and-mortar channels. Built on GCP with Python and FastAPI.
 

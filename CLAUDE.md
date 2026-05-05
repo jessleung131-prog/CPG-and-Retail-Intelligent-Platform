@@ -15,7 +15,7 @@ Email: jessleung131@gmail.com
 ## Projects
 | Name | What |
 |------|------|
-| **CPG Platform** | CPG & Retail Intelligent Platform — forecasting, MMM, FastAPI, Claude AI insights, exec deck |
+| **CPG Platform** | CPG & Retail Intelligence Platform — forecasting, MMM, FastAPI, Claude AI insights, exec deck |
 
 ## Links
 | Resource | URL |

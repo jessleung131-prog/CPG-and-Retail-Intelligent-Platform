@@ -1,4 +1,4 @@
-# Tasks — CPG & Retail Intelligent Platform
+# Tasks — CPG & Retail Intelligence Platform
 
 ## In Progress
 - [ ] Publish Medium article about platform build

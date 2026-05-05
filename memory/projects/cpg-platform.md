@@ -1,4 +1,4 @@
-# CPG & Retail Intelligent Platform
+# CPG & Retail Intelligence Platform
 
 ## Summary
 Production-ready end-to-end analytics platform for CPG & Retail. Goes from raw data to a boardroom-ready executive PowerPoint in under 60 seconds.

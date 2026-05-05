@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.routes import kpis, forecast, attribution, crm
 
 app = FastAPI(
-    title="CPG & Retail Intelligent Platform",
+    title="CPG & Retail Intelligence Platform",
     description=(
         "Marketing and sales analytics API for CPG and retail clients. "
         "Supports sales forecasting, MMM channel attribution, CRM funnel analytics, "
@@ -39,7 +39,7 @@ app.include_router(crm.router)
 def root():
     return {
         "status": "ok",
-        "platform": "CPG & Retail Intelligent Platform",
+        "platform": "CPG & Retail Intelligence Platform",
         "docs": "/docs",
     }
 
