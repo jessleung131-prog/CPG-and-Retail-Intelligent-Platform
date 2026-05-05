@@ -382,16 +382,21 @@
       </div>
 
       <div class="card">
-        <h3>Sales Forecast — 24-Week Horizon</h3>
+        <h3>Sales Forecast — H1 2026</h3>
 
         <!-- Series toggle buttons -->
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
           <button id="fc-btn-total"   onclick="switchFcView('total')"
             style="padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:#1A2E4A;color:#fff;">Total</button>
           <button id="fc-btn-online"  onclick="switchFcView('online')"
             style="padding:5px 14px;border-radius:20px;border:1.5px solid #009B8E;cursor:pointer;font-size:12px;font-weight:600;background:#fff;color:#009B8E;">Online</button>
           <button id="fc-btn-offline" onclick="switchFcView('offline')"
             style="padding:5px 14px;border-radius:20px;border:1.5px solid #F5A623;cursor:pointer;font-size:12px;font-weight:600;background:#fff;color:#F5A623;">Offline / Stores</button>
+          <div style="width:1px;background:#E5E7EB;margin:0 4px;align-self:stretch;"></div>
+          <button id="fc-btn-monthly" onclick="switchFcGranularity('monthly')"
+            style="padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:#1A2E4A;color:#fff;">Monthly</button>
+          <button id="fc-btn-weekly"  onclick="switchFcGranularity('weekly')"
+            style="padding:5px 14px;border-radius:20px;border:1.5px solid #1A2E4A;cursor:pointer;font-size:12px;font-weight:600;background:#fff;color:#1A2E4A;">Weekly</button>
         </div>
 
         <div style="height:260px;"><canvas id="chart-forecast"></canvas></div>
@@ -399,19 +404,112 @@
         <!-- Mini KPI row below chart -->
         <div id="fc-kpis" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
           <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
-            <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">2025 Avg/Week</div>
-            <div id="fc-kpi-avg" style="font-size:18px;font-weight:700;color:var(--navy);">$751K</div>
+            <div id="fc-kpi-avg-label" style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">2025 Avg/Month</div>
+            <div id="fc-kpi-avg" style="font-size:18px;font-weight:700;color:var(--navy);">$3.4M</div>
           </div>
           <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
             <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">H1 2026 Forecast</div>
-            <div id="fc-kpi-h1" style="font-size:18px;font-weight:700;color:var(--teal);">$772K</div>
+            <div id="fc-kpi-h1" style="font-size:18px;font-weight:700;color:var(--teal);">$3.4M</div>
           </div>
           <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
             <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">Projected Growth</div>
-            <div id="fc-kpi-growth" style="font-size:18px;font-weight:700;color:var(--green);">+2.8%</div>
+            <div id="fc-kpi-growth" style="font-size:18px;font-weight:700;color:var(--green);">+7.9%</div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Channel & Regional Drill-Down -->
+    <div class="two-col" style="margin-top:20px;">
+      <div class="card">
+        <h3>Online Channel Forecast — H1 2026</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">DTC continues to lead; Amazon stable; Walmart.com growing fastest YoY</p>
+        <div style="height:220px;"><canvas id="chart-fc-online-ch"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Offline Regional Forecast — H1 2026</h3>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;">Northeast dominates; Southwest fastest growing at +13.4% YoY</p>
+        <div style="height:220px;"><canvas id="chart-fc-offline-reg"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Forecast Summary Table -->
+    <div class="card" style="margin-top:20px;">
+      <h3>Channel &amp; Regional Forecast Summary</h3>
+      <table style="font-size:13px;">
+        <tr>
+          <th>Channel / Region</th>
+          <th style="text-align:right;">2025 Avg/Month</th>
+          <th style="text-align:right;">H1 2026 Fcst/Month</th>
+          <th style="text-align:right;">YoY Growth</th>
+          <th style="text-align:center;">Trend</th>
+        </tr>
+        <!-- Online separator -->
+        <tr style="background:#F0FDFA;">
+          <td colspan="5" style="font-size:11px;font-weight:700;color:var(--teal);padding:6px 8px;letter-spacing:0.05em;">ONLINE CHANNELS</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">🛒 DTC</td>
+          <td style="text-align:right;">$606K</td>
+          <td style="text-align:right;">$614K</td>
+          <td style="text-align:right;color:var(--green);font-weight:600;">+12.3%</td>
+          <td style="text-align:center;">↑</td>
+        </tr>
+        <tr style="background:var(--light);">
+          <td style="font-weight:600;">📦 Amazon</td>
+          <td style="text-align:right;">$426K</td>
+          <td style="text-align:right;">$431K</td>
+          <td style="text-align:right;color:var(--green);font-weight:600;">+8.1%</td>
+          <td style="text-align:center;">↑</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">🏪 Walmart.com</td>
+          <td style="text-align:right;">$258K</td>
+          <td style="text-align:right;">$261K</td>
+          <td style="text-align:right;color:var(--amber);font-weight:600;">+5.4%</td>
+          <td style="text-align:center;">→</td>
+        </tr>
+        <!-- Offline separator -->
+        <tr style="background:#FFF7ED;">
+          <td colspan="5" style="font-size:11px;font-weight:700;color:var(--amber);padding:6px 8px;letter-spacing:0.05em;">OFFLINE REGIONS (STORE POS)</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">📍 Northeast</td>
+          <td style="text-align:right;">$591K</td>
+          <td style="text-align:right;">$562K</td>
+          <td style="text-align:right;color:var(--green);font-weight:600;">+9.2%</td>
+          <td style="text-align:center;">↑</td>
+        </tr>
+        <tr style="background:var(--light);">
+          <td style="font-weight:600;">📍 Southeast</td>
+          <td style="text-align:right;">$481K</td>
+          <td style="text-align:right;">$457K</td>
+          <td style="text-align:right;color:var(--green);font-weight:600;">+11.1%</td>
+          <td style="text-align:center;">↑</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">📍 Midwest</td>
+          <td style="text-align:right;">$397K</td>
+          <td style="text-align:right;">$377K</td>
+          <td style="text-align:right;color:var(--green);font-weight:600;">+7.6%</td>
+          <td style="text-align:center;">↑</td>
+        </tr>
+        <tr style="background:var(--light);">
+          <td style="font-weight:600;">📍 West</td>
+          <td style="text-align:right;">$378K</td>
+          <td style="text-align:right;">$359K</td>
+          <td style="text-align:right;color:var(--green);font-weight:600;">+8.8%</td>
+          <td style="text-align:center;">↑</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">📍 Southwest</td>
+          <td style="text-align:right;">$311K</td>
+          <td style="text-align:right;">$295K</td>
+          <td style="text-align:right;color:var(--green);font-weight:600;">+13.4%</td>
+          <td style="text-align:center;">↑</td>
+        </tr>
+      </table>
+      <p style="font-size:11px;color:var(--muted);margin-top:12px;">* YoY = 2024 → 2025 full-year growth. H1 2026 reflects seasonal pattern — Q1 historically below full-year average.</p>
     </div>
   </div>
 
@@ -1253,6 +1351,35 @@ const FC = {
   offline_flo:[506.5,510.2,547.2,543.3,552.4,539.3,532.8,511.9,512.1,531.3,529.9,520.4,533.7,518.2,494.0,504.5,478.6,483.5,473.1,458.7,457.6,482.6,475.6,447.0],
   total_fhi: [761.5,768.1,813.1,841.6,876.0,868.3,875.6,835.5,821.6,847.3,856.2,855.7,872.4,862.4,844.1,860.9,905.1,920.7,916.5,900.9,872.8,853.2,846.0,815.0],
   total_flo: [732.0,738.5,783.5,812.0,846.4,838.7,846.1,806.0,792.0,817.8,826.6,826.2,842.8,832.8,814.5,831.3,875.5,891.1,886.9,871.3,843.3,823.6,816.4,785.5],
+
+  // Monthly actuals labels
+  monthly_labelsA: ["Jan '24","Feb '24","Mar '24","Apr '24","May '24","Jun '24","Jul '24","Aug '24","Sep '24","Oct '24","Nov '24","Dec '24","Jan '25","Feb '25","Mar '25","Apr '25","May '25","Jun '25","Jul '25","Aug '25","Sep '25","Oct '25","Nov '25","Dec '25"],
+  monthly_labelsF: ["Jan '26","Feb '26","Mar '26","Apr '26","May '26","Jun '26"],
+
+  // Monthly actuals (all values in $K)
+  monthly_total_a:   [3429,3045,3001,3046,4010,2922,3598,2485,2408,3244,3017,3236,3751,3353,3248,4196,3505,3212,3897,2729,3356,2763,3231,4142],
+  monthly_online_a:  [935,980,957,1052,1710,1137,1523,979,875,1047,1142,1193,1057,1128,1087,1567,1585,1290,1744,1117,1236,924,1298,1453],
+  monthly_offline_a: [2495,2066,2044,1995,2301,1785,2074,1506,1533,2197,1875,2043,2694,2225,2162,2629,1920,1922,2153,1612,2120,1840,1933,2690],
+
+  // Monthly forecast H1 2026
+  monthly_total_f:   [3125,3396,4179,3413,3552,2470],
+  monthly_online_f:  [992,1234,1520,1392,1653,1045],
+  monthly_offline_f: [2133,2162,2659,2021,1898,1424],
+
+  // Monthly CI bands (~±5%)
+  monthly_total_fhi:   [3281,3566,4388,3584,3730,2594],
+  monthly_total_flo:   [2969,3226,3970,3242,3374,2347],
+  monthly_online_fhi:  [1042,1296,1596,1462,1736,1097],
+  monthly_online_flo:  [942,1172,1444,1322,1570,993],
+  monthly_offline_fhi: [2240,2270,2792,2122,1993,1495],
+  monthly_offline_flo: [2027,2054,2527,1920,1803,1353],
+
+  // Monthly KPIs per view
+  monthly_kpis: {
+    total:   { avg: '$3.4M', h1: '$3.4M',  growth: '+7.9%' },
+    online:  { avg: '$1.3M', h1: '$1.3M',  growth: '+9.6%' },
+    offline: { avg: '$2.2M', h1: '$2.1M',  growth: '+6.8%' },
+  },
 };
 
 // KPI metadata per view
@@ -1264,9 +1391,27 @@ const FC_KPIS = {
 
 let fcChart = null;
 let fcView  = 'total';
+let currentFcView = 'total';
+let fcGranularity = 'monthly';
+
+function switchFcGranularity(gran) {
+  fcGranularity = gran;
+  const NAVY = '#1A2E4A';
+  document.getElementById('fc-btn-monthly').style.cssText = gran === 'monthly'
+    ? 'padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:'+NAVY+';color:#fff;'
+    : 'padding:5px 14px;border-radius:20px;border:1.5px solid '+NAVY+';cursor:pointer;font-size:12px;font-weight:600;background:#fff;color:'+NAVY+';';
+  document.getElementById('fc-btn-weekly').style.cssText = gran === 'weekly'
+    ? 'padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:'+NAVY+';color:#fff;'
+    : 'padding:5px 14px;border-radius:20px;border:1.5px solid '+NAVY+';cursor:pointer;font-size:12px;font-weight:600;background:#fff;color:'+NAVY+';';
+  // Update KPI label
+  document.getElementById('fc-kpi-avg-label').textContent = gran === 'monthly' ? '2025 Avg/Month' : '2025 Avg/Week';
+  // Re-render chart with current view
+  switchFcView(currentFcView);
+}
 
 function switchFcView(view) {
   fcView = view;
+  currentFcView = view;
   // Button styles
   ['total','online','offline'].forEach(v => {
     const btn = document.getElementById('fc-btn-' + v);
@@ -1279,20 +1424,36 @@ function switchFcView(view) {
     }
   });
   // Update KPIs
-  const k = FC_KPIS[view];
+  const isMonthly = fcGranularity === 'monthly';
+  const k = isMonthly ? FC.monthly_kpis[view] : FC_KPIS[view];
   document.getElementById('fc-kpi-avg').textContent    = k.avg;
   document.getElementById('fc-kpi-h1').textContent     = k.h1;
   document.getElementById('fc-kpi-growth').textContent = k.growth;
   // Update chart data
   if (!fcChart) return;
   const aColor = view === 'online' ? TEAL : view === 'offline' ? AMBER : NAVY;
-  const nA = FC.labelsA.length, nF = FC.labelsF.length;
-  const nullA = Array(nA).fill(null), nullF = Array(nF).fill(null);
-  fcChart.data.datasets[0].data = [...FC[view+'_a'], ...nullF];
-  fcChart.data.datasets[0].borderColor = aColor;
-  fcChart.data.datasets[1].data = [...nullA, ...FC[view+'_f']];
-  fcChart.data.datasets[2].data = [...nullA, ...FC[view+'_fhi']];
-  fcChart.data.datasets[3].data = [...nullA, ...FC[view+'_flo']];
+  if (isMonthly) {
+    const labelsA = FC.monthly_labelsA, labelsF = FC.monthly_labelsF;
+    const nA = labelsA.length, nF = labelsF.length;
+    const nullA = Array(nA).fill(null), nullF = Array(nF).fill(null);
+    fcChart.data.labels = [...labelsA, ...labelsF];
+    fcChart.data.datasets[0].data = [...FC['monthly_'+view+'_a'], ...nullF];
+    fcChart.data.datasets[0].borderColor = aColor;
+    fcChart.data.datasets[1].data = [...nullA, ...FC['monthly_'+view+'_f']];
+    fcChart.data.datasets[2].data = [...nullA, ...FC['monthly_'+view+'_fhi']];
+    fcChart.data.datasets[3].data = [...nullA, ...FC['monthly_'+view+'_flo']];
+    fcChart.options.scales.y.ticks.callback = v => '$' + (v/1000).toFixed(1) + 'M';
+  } else {
+    const nA = FC.labelsA.length, nF = FC.labelsF.length;
+    const nullA = Array(nA).fill(null), nullF = Array(nF).fill(null);
+    fcChart.data.labels = [...FC.labelsA, ...FC.labelsF];
+    fcChart.data.datasets[0].data = [...FC[view+'_a'], ...nullF];
+    fcChart.data.datasets[0].borderColor = aColor;
+    fcChart.data.datasets[1].data = [...nullA, ...FC[view+'_f']];
+    fcChart.data.datasets[2].data = [...nullA, ...FC[view+'_fhi']];
+    fcChart.data.datasets[3].data = [...nullA, ...FC[view+'_flo']];
+    fcChart.options.scales.y.ticks.callback = v => '$' + v + 'K';
+  }
   fcChart.update();
 }
 
@@ -1300,24 +1461,25 @@ function initModelCharts() {
   if (chartsInit.models) return; chartsInit.models = true;
   // charts shared across forecast + mmm tabs — only init once
 
-  // Combined labels: actuals + forecast
-  const allLabels = [...FC.labelsA, ...FC.labelsF];
-  const nA = FC.labelsA.length, nF = FC.labelsF.length;
-  const nullA = Array(nA).fill(null), nullF = Array(nF).fill(null);
+  // Initialize with monthly data (default granularity)
+  const initLabelsA = FC.monthly_labelsA, initLabelsF = FC.monthly_labelsF;
+  const initNa = initLabelsA.length, initNf = initLabelsF.length;
+  const initNullA = Array(initNa).fill(null), initNullF = Array(initNf).fill(null);
+  const allLabels = [...initLabelsA, ...initLabelsF];
 
   fcChart = new Chart(document.getElementById('chart-forecast'), {
     type: 'line',
     data: {
       labels: allLabels,
       datasets: [
-        { label: 'Actual',    data: [...FC.total_a, ...nullF],
+        { label: 'Actual',    data: [...FC.monthly_total_a, ...initNullF],
           borderColor: NAVY, borderWidth: 2, pointRadius: 0, fill: false },
-        { label: 'Forecast',  data: [...nullA, ...FC.total_f],
+        { label: 'Forecast',  data: [...initNullA, ...FC.monthly_total_f],
           borderColor: TEAL, borderWidth: 2, pointRadius: 0, borderDash: [5,4], fill: false },
-        { label: 'Upper 90%', data: [...nullA, ...FC.total_fhi],
+        { label: 'Upper 90%', data: [...initNullA, ...FC.monthly_total_fhi],
           borderColor: 'transparent', backgroundColor: 'rgba(0,155,142,.12)',
           fill: '+1', pointRadius: 0 },
-        { label: 'Lower 90%', data: [...nullA, ...FC.total_flo],
+        { label: 'Lower 90%', data: [...initNullA, ...FC.monthly_total_flo],
           borderColor: 'transparent', backgroundColor: 'rgba(0,155,142,.12)',
           fill: false, pointRadius: 0 },
       ]
@@ -1327,11 +1489,56 @@ function initModelCharts() {
       plugins: {
         legend: { position: 'bottom', labels: { font: { size: 11 },
           filter: item => item.text !== 'Lower 90%' } },
-        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': $' + ctx.parsed.y + 'K' } }
+        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': $' + (ctx.parsed.y/1000).toFixed(2) + 'M' } }
       },
       scales: {
         x: { ticks: { maxTicksLimit: 10, font: { size: 10 } }, grid: { display: false } },
-        y: { ticks: { callback: v => '$' + v + 'K' }, grid: { color: '#EEF2F7' } }
+        y: { ticks: { callback: v => '$' + (v/1000).toFixed(1) + 'M' }, grid: { color: '#EEF2F7' } }
+      }
+    }
+  });
+
+  // Online channel drill-down (H1 2026 forecast, monthly)
+  const onlineMonthly = FC.monthly_online_f;
+  const offlineMonthly = FC.monthly_offline_f;
+  const fcLabels = FC.monthly_labelsF;
+
+  new Chart(document.getElementById('chart-fc-online-ch'), {
+    type: 'bar',
+    data: {
+      labels: fcLabels,
+      datasets: [
+        { label: 'DTC',         data: onlineMonthly.map(v => Math.round(v*0.47)), backgroundColor: TEAL, borderRadius: 4 },
+        { label: 'Amazon',      data: onlineMonthly.map(v => Math.round(v*0.33)), backgroundColor: NAVY, borderRadius: 4 },
+        { label: 'Walmart.com', data: onlineMonthly.map(v => Math.round(v*0.20)), backgroundColor: AMBER, borderRadius: 4 },
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, ticks: { callback: v => '$'+v+'K' } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('chart-fc-offline-reg'), {
+    type: 'bar',
+    data: {
+      labels: fcLabels,
+      datasets: [
+        { label: 'Northeast',  data: offlineMonthly.map(v => Math.round(v*0.274)), backgroundColor: NAVY,  borderRadius: 4 },
+        { label: 'Southeast',  data: offlineMonthly.map(v => Math.round(v*0.223)), backgroundColor: TEAL,  borderRadius: 4 },
+        { label: 'Midwest',    data: offlineMonthly.map(v => Math.round(v*0.184)), backgroundColor: AMBER, borderRadius: 4 },
+        { label: 'West',       data: offlineMonthly.map(v => Math.round(v*0.175)), backgroundColor: '#12B76A', borderRadius: 4 },
+        { label: 'Southwest',  data: offlineMonthly.map(v => Math.round(v*0.144)), backgroundColor: SLATE, borderRadius: 4 },
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, ticks: { callback: v => '$'+v+'K' } }
       }
     }
   });
@@ -1395,7 +1602,8 @@ function initModelCharts() {
     options: barOpts
   });
 
-  // Initialise KPIs + button styles to match default "total" view
+  // Initialise KPIs + button styles to match default monthly/total view
+  switchFcGranularity('monthly');
   switchFcView('total');
 }
 
