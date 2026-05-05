@@ -302,11 +302,17 @@
       </div>
     </div>
 
-    <div class="two-col">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px;">
       <div class="card">
         <h3>Online Revenue by Channel (2-Year)</h3>
         <div class="chart-wrap">
           <canvas id="chart-online"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Offline Revenue by Region (2-Year)</h3>
+        <div class="chart-wrap">
+          <canvas id="chart-offline-region"></canvas>
         </div>
       </div>
       <div class="card">
@@ -1181,6 +1187,27 @@ function initDataCharts() {
         { label: 'Snacks',    data: [9.8,  6.7, 4.1], backgroundColor: NAVY },
         { label: 'Personal',  data: [7.2,  5.3, 3.8], backgroundColor: AMBER },
         { label: 'Household', data: [5.1,  4.2, 1.4], backgroundColor: MUTED },
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, ticks: { callback: v => '$' + v + 'M' } }
+      }
+    }
+  });
+
+  // Offline revenue by region (stacked by store format)
+  new Chart(document.getElementById('chart-offline-region'), {
+    type: 'bar',
+    data: {
+      labels: ['Northeast', 'Southeast', 'Midwest', 'West', 'Southwest'],
+      datasets: [
+        { label: 'Supermarket',   data: [6.79, 5.56, 4.58, 4.33, 3.56], backgroundColor: TEAL },
+        { label: 'Drug Store',    data: [2.67, 2.16, 1.78, 1.70, 1.40], backgroundColor: NAVY },
+        { label: 'Club Store',    data: [1.70, 1.39, 1.14, 1.08, 0.89], backgroundColor: AMBER },
+        { label: 'Mass Merchant', data: [0.96, 0.78, 0.65, 0.61, 0.50], backgroundColor: MUTED },
       ]
     },
     options: { responsive: true, maintainAspectRatio: false,
