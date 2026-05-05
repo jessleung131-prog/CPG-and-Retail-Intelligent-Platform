@@ -404,15 +404,15 @@
         <!-- Mini KPI row below chart -->
         <div id="fc-kpis" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
           <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
-            <div id="fc-kpi-avg-label" style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">2025 Avg/Month</div>
-            <div id="fc-kpi-avg" style="font-size:18px;font-weight:700;color:var(--navy);">$3.4M</div>
+            <div id="fc-kpi-avg-label" style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">2024 Avg/Month</div>
+            <div id="fc-kpi-avg" style="font-size:18px;font-weight:700;color:var(--navy);">$3.1M</div>
           </div>
           <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
-            <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">H1 2026 Forecast</div>
+            <div id="fc-kpi-h1-label" style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">2025 Avg/Month</div>
             <div id="fc-kpi-h1" style="font-size:18px;font-weight:700;color:var(--teal);">$3.4M</div>
           </div>
           <div style="background:var(--light);border-radius:8px;padding:10px;text-align:center;">
-            <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">Projected Growth</div>
+            <div id="fc-kpi-growth-label" style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;">YoY Growth</div>
             <div id="fc-kpi-growth" style="font-size:18px;font-weight:700;color:var(--green);">+7.9%</div>
           </div>
         </div>
@@ -1374,11 +1374,11 @@ const FC = {
   monthly_offline_fhi: [2240,2270,2792,2122,1993,1495],
   monthly_offline_flo: [2027,2054,2527,1920,1803,1353],
 
-  // Monthly KPIs per view
+  // Monthly KPIs per view: prev = 2024 avg/month, avg = 2025 avg/month, growth = YoY
   monthly_kpis: {
-    total:   { avg: '$3.4M', h1: '$3.4M',  growth: '+7.9%' },
-    online:  { avg: '$1.3M', h1: '$1.3M',  growth: '+9.6%' },
-    offline: { avg: '$2.2M', h1: '$2.1M',  growth: '+6.8%' },
+    total:   { prev: '$3.1M', avg: '$3.4M', growth: '+7.9%' },
+    online:  { prev: '$1.1M', avg: '$1.3M', growth: '+14.4%' },
+    offline: { prev: '$2.1M', avg: '$2.2M', growth: '+4.0%' },
   },
 };
 
@@ -1403,8 +1403,16 @@ function switchFcGranularity(gran) {
   document.getElementById('fc-btn-weekly').style.cssText = gran === 'weekly'
     ? 'padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:'+NAVY+';color:#fff;'
     : 'padding:5px 14px;border-radius:20px;border:1.5px solid '+NAVY+';cursor:pointer;font-size:12px;font-weight:600;background:#fff;color:'+NAVY+';';
-  // Update KPI label
-  document.getElementById('fc-kpi-avg-label').textContent = gran === 'monthly' ? '2025 Avg/Month' : '2025 Avg/Week';
+  // Update KPI labels
+  if (gran === 'monthly') {
+    document.getElementById('fc-kpi-avg-label').textContent  = '2024 Avg/Month';
+    document.getElementById('fc-kpi-h1-label').textContent   = '2025 Avg/Month';
+    document.getElementById('fc-kpi-growth-label').textContent = 'YoY Growth';
+  } else {
+    document.getElementById('fc-kpi-avg-label').textContent  = '2025 Avg/Week';
+    document.getElementById('fc-kpi-h1-label').textContent   = 'H1 2026 Forecast';
+    document.getElementById('fc-kpi-growth-label').textContent = 'Projected Growth';
+  }
   // Re-render chart with current view
   switchFcView(currentFcView);
 }
@@ -1426,8 +1434,8 @@ function switchFcView(view) {
   // Update KPIs
   const isMonthly = fcGranularity === 'monthly';
   const k = isMonthly ? FC.monthly_kpis[view] : FC_KPIS[view];
-  document.getElementById('fc-kpi-avg').textContent    = k.avg;
-  document.getElementById('fc-kpi-h1').textContent     = k.h1;
+  document.getElementById('fc-kpi-avg').textContent    = isMonthly ? k.prev : k.avg;
+  document.getElementById('fc-kpi-h1').textContent     = isMonthly ? k.avg  : k.h1;
   document.getElementById('fc-kpi-growth').textContent = k.growth;
   // Update chart data
   if (!fcChart) return;
